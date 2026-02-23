@@ -16,9 +16,9 @@ data:
     exporters:
       # Forward to Langfuse
       otlphttp/langfuse:
-        endpoint: http://172.16.10.173:3000/api/public/otel
+        endpoint: http://172.16.10.176:3000/api/public/otel
         headers:
-          Authorization: "Basic cGstbGYtNmEyODVjZjUtMjc4Ny00Y2Y3LTgyM2ItNTRmZWY5YmIxYjYwOnNrLWxmLTE5NDI2ZWRlLTMyYWItNGFlMS05YTM0LTY0MjkwMDA5MDE4ZA=="
+          Authorization: "Basic cGstbGYtZDU5ODE0NzktM2E4Ny00YmRiLThiOTQtMjFlMzM0MjM0NzEzOnNrLWxmLTg4MzYyMGRkLWJmZjAtNDFhMC05NDY5LWZmZjBkYmQ3MTMyMw=="
         retry_on_failure:
           enabled: true
           initial_interval: 5s
