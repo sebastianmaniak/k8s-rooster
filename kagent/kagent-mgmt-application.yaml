@@ -25,6 +25,8 @@ spec:
             enabled: true
           agentgateway:
             enabled: true
+          mesh:
+            enabled: true
         service:
           type: LoadBalancer
           clusterIP: ""
