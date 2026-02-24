@@ -12,7 +12,6 @@ resources:
   - elicitation.yaml
 
   # MCP Authentication — Okta JWKS service + JWT validation
-  - okta-jwks-service.yaml
   - mcp-jwt-auth.yaml
   # MCP Authorization — Scope-based tool access (read/write + block destructive)
   - mcp-tool-rbac.yaml
