@@ -13,7 +13,7 @@ spec:
         # Pick a Vertex model you have access to (examples):
         # - gemini-2.0-flash
         # - gemini-2.0-pro
-        model: gemini-2.0-flash
+        model: claude-opus-4-6
 
   # Auth NOTE:
   # - Vertex AI backends use GCP Application Default Credentials (ADC).
