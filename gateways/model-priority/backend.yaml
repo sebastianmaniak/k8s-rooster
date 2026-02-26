@@ -11,9 +11,9 @@ spec:
   ai:
     groups:
     - providers:
-      - name: openai-gpt-53-codex
+      - name: openai-gpt-52-codex
         openai:
-          model: gpt-5.3-codex
+          model: gpt-5.2-codex
         policies:
           auth:
             secretRef:
