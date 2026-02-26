@@ -8,7 +8,7 @@ spec:
     provider:
       vertexai:
         projectId: "marketing-441114"
-        region: "global"
+        region: "us-central1"
 
         # Pick a Vertex model you have access to (examples):
         # - gemini-2.0-flash
