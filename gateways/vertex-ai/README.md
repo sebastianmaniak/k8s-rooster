@@ -2,6 +2,14 @@
 
 This gateway config adds a Vertex AI backend + HTTPRoute.
 
+## Vertex settings
+
+This repo is currently set to:
+- projectId: `marketing-441114`
+- region: `global`
+
+If Vertex returns location errors, change `region` to a real Vertex location like `us-central1`.
+
 ## Auth (recommended for VMware/Talos/K3s/etc.)
 
 Because this cluster is not GKE, the simplest approach is a **GCP service account key JSON** mounted into the agentgateway proxy pods.
@@ -14,18 +22,16 @@ kubectl -n agentgateway-system create secret generic gcp-vertex-sa \
 ```
 
 This repo config mounts it at:
-
 - `/var/secrets/google/key.json`
 
-And sets:
-
+and sets:
 - `GOOGLE_APPLICATION_CREDENTIALS=/var/secrets/google/key.json`
 
-> Note: the volume is marked `optional: true` so existing gateways won't break if the secret isn't created yet.
+> The volume is marked `optional: true` so existing gateways won't crash if the secret isn't created yet.
 
 ## Configure the backend
 
-Edit `backend.yaml`:
+Edit `backend.yaml` if you want to change:
 - `projectId`
 - `region`
 - `model`
@@ -33,7 +39,6 @@ Edit `backend.yaml`:
 ## Call pattern
 
 Once deployed, the route is:
-
 - `http://<gateway-ip>:8080/vertex/v1/chat/completions`
 
 (Depending on how you expose the `agentgateway-proxy` Gateway service in your environment.)

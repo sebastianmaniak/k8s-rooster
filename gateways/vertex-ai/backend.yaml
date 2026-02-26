@@ -7,9 +7,8 @@ spec:
   ai:
     provider:
       vertexai:
-        # TODO: set these for your GCP project
-        projectId: "REPLACE_ME_PROJECT_ID"
-        region: "us-central1"
+        projectId: "marketing-441114"
+        region: "global"
 
         # Pick a Vertex model you have access to (examples):
         # - gemini-2.0-flash
@@ -18,5 +17,5 @@ spec:
 
   # Auth NOTE:
   # - Vertex AI backends use GCP Application Default Credentials (ADC).
-  # - Recommended on GKE: Workload Identity (no key files).
-  # - Alternative: mount a service account JSON and set GOOGLE_APPLICATION_CREDENTIALS in the agentgateway pod.
+  # - On this on-prem cluster, mount a service account JSON key as a K8s Secret and set
+  #   GOOGLE_APPLICATION_CREDENTIALS in the agentgateway proxy pods.
