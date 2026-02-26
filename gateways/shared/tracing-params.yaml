@@ -4,6 +4,28 @@ metadata:
   name: tracing
   namespace: agentgateway-system
 spec:
+  # Vertex AI auth uses GCP ADC. On non-GKE clusters, mount a service account key
+  # and set GOOGLE_APPLICATION_CREDENTIALS.
+  env:
+    - name: GOOGLE_APPLICATION_CREDENTIALS
+      value: /var/secrets/google/key.json
+
+  deployment:
+    spec:
+      template:
+        spec:
+          volumes:
+            - name: gcp-sa-key
+              secret:
+                secretName: gcp-vertex-sa
+                optional: true
+          containers:
+            - name: agentgateway
+              volumeMounts:
+                - name: gcp-sa-key
+                  mountPath: /var/secrets/google
+                  readOnly: true
+
   rawConfig:
     config:
       tracing:
