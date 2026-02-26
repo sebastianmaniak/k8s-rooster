@@ -10,6 +10,8 @@ spec:
   - name: model-priority-gateway-proxy
     namespace: agentgateway-system
     sectionName: model-priority
+    group: gateway.networking.k8s.io
+    kind: Gateway
   rules:
   - matches:
     - path:
@@ -20,3 +22,4 @@ spec:
       namespace: agentgateway-system
       group: agentgateway.dev
       kind: AgentgatewayBackend
+      weight: 1

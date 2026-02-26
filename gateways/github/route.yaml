@@ -8,12 +8,15 @@ spec:
   - name: github-gateway-proxy
     namespace: agentgateway-system
     sectionName: github-mcp
+    group: gateway.networking.k8s.io
+    kind: Gateway
   rules:
-    - matches:
-        - path:
-            type: PathPrefix
-            value: /github
-      backendRefs:
-      - name: github-dedicated-backend
-        group: agentgateway.dev
-        kind: AgentgatewayBackend
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /github
+    backendRefs:
+    - name: github-dedicated-backend
+      group: agentgateway.dev
+      kind: AgentgatewayBackend
+      weight: 1

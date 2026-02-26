@@ -7,16 +7,19 @@ metadata:
     route-type: xai-provider
 spec:
   parentRefs:
-    - name: xai-gateway-proxy
-      namespace: agentgateway-system
-      sectionName: xai-providers
+  - name: xai-gateway-proxy
+    namespace: agentgateway-system
+    sectionName: xai-providers
+    group: gateway.networking.k8s.io
+    kind: Gateway
   rules:
-    - matches:
-        - path:
-            type: PathPrefix
-            value: /xai
-      backendRefs:
-        - name: xai
-          namespace: agentgateway-system
-          group: agentgateway.dev
-          kind: AgentgatewayBackend
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /xai
+    backendRefs:
+    - name: xai
+      namespace: agentgateway-system
+      group: agentgateway.dev
+      kind: AgentgatewayBackend
+      weight: 1

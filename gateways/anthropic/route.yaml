@@ -7,16 +7,19 @@ metadata:
     route-type: llm-provider
 spec:
   parentRefs:
-    - name: agentgateway-proxy
-      namespace: agentgateway-system
-      sectionName: llm-providers
+  - name: agentgateway-proxy
+    namespace: agentgateway-system
+    sectionName: llm-providers
+    group: gateway.networking.k8s.io
+    kind: Gateway
   rules:
-    - matches:
-        - path:
-            type: PathPrefix
-            value: /anthropic
-      backendRefs:
-        - name: anthropic
-          namespace: agentgateway-system
-          group: agentgateway.dev
-          kind: AgentgatewayBackend
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /anthropic
+    backendRefs:
+    - name: anthropic
+      namespace: agentgateway-system
+      group: agentgateway.dev
+      kind: AgentgatewayBackend
+      weight: 1
