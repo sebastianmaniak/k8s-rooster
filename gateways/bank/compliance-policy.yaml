@@ -40,12 +40,14 @@ spec:
         request:
         - response:
             message: "BLOCKED: Request contains sensitive financial data"
+            statusCode: 403
           regex:
             action: Reject
             builtins:
             - CreditCard
         - response:
             message: "BLOCKED: Request contains a Social Security Number"
+            statusCode: 403
           regex:
             action: Reject
             builtins:
