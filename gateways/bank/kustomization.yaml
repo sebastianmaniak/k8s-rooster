@@ -6,8 +6,6 @@ resources:
   - backend.yaml
   - route.yaml
   - compliance-policy.yaml
-  - rate-limit-config.yaml
-  - rate-limit-policy.yaml
 
 commonLabels:
   app.kubernetes.io/name: bank-gateway
