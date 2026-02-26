@@ -1,0 +1,13 @@
+apiVersion: agentgateway.dev/v1alpha1
+kind: AgentgatewayBackend
+metadata:
+  name: bank-mcp-backend
+  namespace: agentgateway-system
+spec:
+  mcp:
+    targets:
+    - name: bank-mcp-server
+      selector:
+        services:
+          matchLabels:
+            app: bank-mcp-server

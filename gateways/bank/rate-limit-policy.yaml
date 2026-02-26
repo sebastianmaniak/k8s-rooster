@@ -1,0 +1,33 @@
+# Apply request-based rate limit to bank LLM route
+apiVersion: enterpriseagentgateway.solo.io/v1alpha1
+kind: EnterpriseAgentgatewayPolicy
+metadata:
+  name: bank-request-rate-limit
+  namespace: agentgateway-system
+spec:
+  targetRefs:
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: bank-openai
+  traffic:
+    entRateLimit:
+      global:
+        rateLimitConfigRefs:
+        - name: bank-request-rate-limit
+---
+# Apply token-based rate limit to bank LLM route
+apiVersion: enterpriseagentgateway.solo.io/v1alpha1
+kind: EnterpriseAgentgatewayPolicy
+metadata:
+  name: bank-token-rate-limit
+  namespace: agentgateway-system
+spec:
+  targetRefs:
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: bank-openai
+  traffic:
+    entRateLimit:
+      global:
+        rateLimitConfigRefs:
+        - name: bank-token-rate-limit

@@ -8,6 +8,7 @@ resources:
   - xai/
   - github/
   - vertex-ai/
+  - bank/
 
 commonLabels:
   app.kubernetes.io/name: llm-gateways

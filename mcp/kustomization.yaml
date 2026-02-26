@@ -7,6 +7,7 @@ resources:
   - github/
   - slack/
   - fetch/
+  - bank/
 
 commonLabels:
   app.kubernetes.io/name: mcp-servers

@@ -1,0 +1,39 @@
+# Request-based rate limit: 20 requests per minute for bank agents
+apiVersion: ratelimit.solo.io/v1alpha1
+kind: RateLimitConfig
+metadata:
+  name: bank-request-rate-limit
+  namespace: agentgateway-system
+spec:
+  raw:
+    descriptors:
+    - key: generic_key
+      value: counter
+      rateLimit:
+        requestsPerUnit: 20
+        unit: MINUTE
+    rateLimits:
+    - actions:
+      - genericKey:
+          descriptorValue: counter
+      type: REQUEST
+---
+# Token-based rate limit: 2000 tokens per minute per user
+apiVersion: ratelimit.solo.io/v1alpha1
+kind: RateLimitConfig
+metadata:
+  name: bank-token-rate-limit
+  namespace: agentgateway-system
+spec:
+  raw:
+    descriptors:
+    - key: X-User-ID
+      rateLimit:
+        requestsPerUnit: 2000
+        unit: MINUTE
+    rateLimits:
+    - actions:
+      - requestHeaders:
+          descriptorKey: "X-User-ID"
+          headerName: "X-User-ID"
+      type: TOKEN

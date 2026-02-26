@@ -1,0 +1,50 @@
+# Bank compliance prompt enrichment — injected into every LLM call through bank gateway
+apiVersion: agentgateway.dev/v1alpha1
+kind: AgentgatewayPolicy
+metadata:
+  name: bank-compliance-enrichment
+  namespace: agentgateway-system
+spec:
+  targetRefs:
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: bank-openai
+  frontend:
+    http:
+      prompt:
+        prepend:
+        - role: system
+          content: |
+            BANKING COMPLIANCE RULES (mandatory):
+            1. Never disclose customer PII (SSN, full account numbers) in responses
+            2. All credit decisions must follow Equal Credit Opportunity Act (ECOA)
+            3. Credit limit increases >2x current limit require manual admin approval
+            4. Customers with delinquencies must be routed to manual review
+            5. Always provide clear reasoning for credit decisions
+            6. Log all credit limit changes with assessed_by field for audit
+---
+# PII protection on bank LLM route
+apiVersion: agentgateway.dev/v1alpha1
+kind: AgentgatewayPolicy
+metadata:
+  name: bank-pii-guard
+  namespace: agentgateway-system
+spec:
+  targetRefs:
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: bank-openai
+  frontend:
+    http:
+      promptGuard:
+        request:
+          customResponseMessage: "Request blocked: contains sensitive financial data"
+          builtins:
+          - CreditCard
+          - Ssn
+        response:
+          builtins:
+          - CreditCard
+          - Ssn
+          - PhoneNumber
+          - EmailAddress

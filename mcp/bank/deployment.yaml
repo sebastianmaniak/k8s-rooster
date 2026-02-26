@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bank-mcp-server
+  namespace: agentgateway-system
+  labels:
+    app: bank-mcp-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bank-mcp-server
+  template:
+    metadata:
+      labels:
+        app: bank-mcp-server
+    spec:
+      containers:
+      - name: bank-mcp-server
+        image: sebbycorp/bank-mcp-server:7d5dd8f
+        ports:
+        - containerPort: 3001
+        env:
+        - name: BANK_API_URL
+          value: "http://solo-bank-web.kagent.svc.cluster.local:8080"
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
