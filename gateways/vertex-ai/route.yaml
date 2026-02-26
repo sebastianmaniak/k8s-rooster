@@ -7,9 +7,9 @@ metadata:
     route-type: llm-provider
 spec:
   parentRefs:
-  - name: agentgateway-proxy
+  - name: vertex-gateway-proxy
     namespace: agentgateway-system
-    sectionName: llm-providers
+    sectionName: vertex-providers
     group: gateway.networking.k8s.io
     kind: Gateway
   rules:
