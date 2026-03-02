@@ -4,6 +4,7 @@ output "vip_assignments" {
     "solo.rooster.maniak.com"         = "${local.vips["solo_rooster"]}:8080  → agentgateway-proxy (NodePort ${local.nodeports["solo_rooster"]})"
     "argo.rooster.maniak.io (HTTPS)"  = "${local.vips["argo_rooster"]}:443  → argocd-server (NodePort ${local.nodeports["argo_https"]})"
     "argo.rooster.maniak.io (HTTP)"   = "${local.vips["argo_rooster"]}:80   → argocd-server (NodePort ${local.nodeports["argo_http"]})"
+    "ui.rooster.maniak.com"           = "${local.vips["ui_rooster"]}:80   → solo-enterprise-ui (NodePort ${local.nodeports["ui_rooster"]})"
     "xai-gateway"                     = "${local.vips["xai_gateway"]}:8081  → xai-gateway-proxy (NodePort ${local.nodeports["xai_gateway"]})"
     "mcp-gateway"                     = "${local.vips["mcp_gateway"]}:8090  → mcp-gateway-proxy (NodePort ${local.nodeports["mcp_gateway"]})"
     "model-priority-gateway"          = "${local.vips["model_gw"]}:8085     → model-priority-gateway-proxy (NodePort ${local.nodeports["model_gw"]})"

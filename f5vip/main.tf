@@ -7,6 +7,7 @@ locals {
   vips = {
     solo_rooster = "172.16.20.120" # solo.rooster.maniak.com (main agentgateway)
     argo_rooster = "172.16.20.121" # argo.rooster.maniak.io (ArgoCD)
+    ui_rooster   = "172.16.20.126" # ui.rooster.maniak.com (Solo Enterprise UI)
     xai_gateway  = "172.16.20.122" # xai-gateway-proxy
     mcp_gateway  = "172.16.20.123" # mcp-gateway-proxy
     model_gw     = "172.16.20.124" # model-priority-gateway-proxy
@@ -18,6 +19,7 @@ locals {
     solo_rooster = 31572 # agentgateway-proxy 8080:31572
     argo_https   = 31988 # argocd-server 443:31988
     argo_http    = 32178 # argocd-server 80:32178
+    ui_rooster   = 31211 # solo-enterprise-ui 80:31211
     xai_gateway  = 31990 # xai-gateway-proxy 8081:31990
     mcp_gateway  = 30168 # mcp-gateway-proxy 8090:30168
     model_gw     = 30689 # model-priority-gateway-proxy 8085:30689
@@ -78,6 +80,18 @@ resource "bigip_ltm_pool" "argo_http" {
 resource "bigip_ltm_pool_attachment" "argo_http" {
   for_each = toset(local.pool_members["argo_http"])
   pool     = bigip_ltm_pool.argo_http.name
+  node     = each.value
+}
+
+resource "bigip_ltm_pool" "ui_rooster" {
+  name                = "/${var.partition}/pool_ui_rooster"
+  load_balancing_mode = "round-robin"
+  monitors            = [bigip_ltm_monitor.tcp.name]
+}
+
+resource "bigip_ltm_pool_attachment" "ui_rooster" {
+  for_each = toset(local.pool_members["ui_rooster"])
+  pool     = bigip_ltm_pool.ui_rooster.name
   node     = each.value
 }
 
@@ -161,6 +175,17 @@ resource "bigip_ltm_virtual_server" "argo_http" {
   destination                = local.vips["argo_rooster"]
   port                       = 80
   pool                       = bigip_ltm_pool.argo_http.name
+  ip_protocol                = "tcp"
+  source_address_translation = "automap"
+  profiles                   = ["/Common/fastL4"]
+}
+
+# --- ui.rooster.maniak.com (Solo Enterprise UI - L4 TCP) ---
+resource "bigip_ltm_virtual_server" "ui_rooster" {
+  name                       = "/${var.partition}/vs_ui_rooster"
+  destination                = local.vips["ui_rooster"]
+  port                       = 80
+  pool                       = bigip_ltm_pool.ui_rooster.name
   ip_protocol                = "tcp"
   source_address_translation = "automap"
   profiles                   = ["/Common/fastL4"]
