@@ -29,7 +29,7 @@ spec:
   rawConfig:
     config:
       tracing:
-        otlpEndpoint: grpc://langfuse-otel-collector.agentgateway-system.svc.cluster.local:4317
+        otlpEndpoint: langfuse-otel-collector.agentgateway-system.svc.cluster.local:4317
         otlpProtocol: grpc
         randomSampling: true
         fields:
