@@ -12,6 +12,7 @@ locals {
     mcp_gateway  = "172.16.20.123" # mcp-gateway-proxy
     model_gw     = "172.16.20.124" # model-priority-gateway-proxy
     github_gw    = "172.16.20.125" # github-gateway-proxy
+    vault_ui     = "172.16.20.126" # vault.rooster.maniak.com (Vault UI)
   }
 
   # NodePort mappings from live cluster
@@ -24,6 +25,7 @@ locals {
     mcp_gateway  = 30168 # mcp-gateway-proxy 8090:30168
     model_gw     = 30689 # model-priority-gateway-proxy 8085:30689
     github_gw    = 31313 # github-gateway-proxy 8092:31313
+    vault_ui     = 30820 # vault 8200:30820
   }
 
   # Build pool member lists: each node on the relevant NodePort
@@ -143,6 +145,18 @@ resource "bigip_ltm_pool_attachment" "github_gw" {
   node     = "/${var.partition}/${each.value}"
 }
 
+resource "bigip_ltm_pool" "vault_ui" {
+  name                = "/${var.partition}/pool_vault_ui"
+  load_balancing_mode = "round-robin"
+  monitors            = [bigip_ltm_monitor.tcp.name]
+}
+
+resource "bigip_ltm_pool_attachment" "vault_ui" {
+  for_each = toset(local.pool_members["vault_ui"])
+  pool     = bigip_ltm_pool.vault_ui.name
+  node     = "/${var.partition}/${each.value}"
+}
+
 ###############################################################################
 # Virtual Servers
 ###############################################################################
@@ -230,6 +244,17 @@ resource "bigip_ltm_virtual_server" "github_gw" {
   destination                = local.vips["github_gw"]
   port                       = 8092
   pool                       = bigip_ltm_pool.github_gw.name
+  ip_protocol                = "tcp"
+  source_address_translation = "automap"
+  profiles                   = ["/Common/fastL4"]
+}
+
+# --- vault.rooster.maniak.com (Vault UI - L4 TCP) ---
+resource "bigip_ltm_virtual_server" "vault_ui" {
+  name                       = "/${var.partition}/vs_vault_ui"
+  destination                = local.vips["vault_ui"]
+  port                       = 8200
+  pool                       = bigip_ltm_pool.vault_ui.name
   ip_protocol                = "tcp"
   source_address_translation = "automap"
   profiles                   = ["/Common/fastL4"]

@@ -9,5 +9,6 @@ output "vip_assignments" {
     "mcp-gateway"                    = "${local.vips["mcp_gateway"]}:8090  → mcp-gateway-proxy (NodePort ${local.nodeports["mcp_gateway"]})"
     "model-priority-gateway"         = "${local.vips["model_gw"]}:8085     → model-priority-gateway-proxy (NodePort ${local.nodeports["model_gw"]})"
     "github-gateway"                 = "${local.vips["github_gw"]}:8092    → github-gateway-proxy (NodePort ${local.nodeports["github_gw"]})"
+    "vault.rooster.maniak.com"       = "${local.vips["vault_ui"]}:8200    → vault (NodePort ${local.nodeports["vault_ui"]})"
   }
 }
