@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - k8s-agent.yaml
+  - compliance-incident-agent.yaml
   - github-issues-agent.yaml
   - github-pr-agent.yaml
 

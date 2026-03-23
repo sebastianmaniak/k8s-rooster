@@ -607,7 +607,7 @@
           <div class="scenario-num">6</div>
           <div class="scenario-body">
             <h3>Autonomous Incident Response with khook &nbsp;<span class="tag tag-red">chaos.sh khook</span></h3>
-            <p><a href="https://github.com/kagent-dev/khook">khook</a> is a Kubernetes controller that watches cluster events and auto-triggers kagent agents — no human prompt needed. A <code>Hook</code> CR in <code>compliance-ops</code> watches for pod-restart events. When <code>chaos.sh khook</code> breaks the compliance-report-generator (database connection failure), khook detects the restart, creates a kagent session via A2A, and the bank-platform-agent diagnoses the crash autonomously.</p>
+            <p><a href="https://github.com/kagent-dev/khook">khook</a> is a Kubernetes controller that watches cluster events and auto-triggers kagent agents — no human prompt needed. A <code>Hook</code> CR in <code>compliance-ops</code> watches for pod-restart events. When <code>chaos.sh khook</code> breaks the compliance-report-generator (database connection failure), khook detects the restart, creates a kagent session via A2A, and the <strong>compliance-incident-agent</strong> (Claude Sonnet 4.6) diagnoses the crash autonomously. This dedicated agent has read-only k8s tools and can create GitHub issues to track incidents.</p>
             <div class="code-block" style="margin-bottom: 10px;">
               <span class="comment"># No human prompt — khook auto-triggers the agent</span><br>
               <span class="prompt">$</span> <span class="cmd">./chaos.sh khook</span><br>
@@ -901,8 +901,8 @@
           </tr>
           <tr>
             <td><code>kagent</code></td>
-            <td>bank-platform-agent, k8s-agent (Claude Sonnet 4.6 + HITL), github-issues-agent (Grok), prometheus-mcp-server, khook controller</td>
-            <td>AI orchestrator + sub-agents + Prometheus tool server + event watcher</td>
+            <td>bank-platform-agent, k8s-agent (Claude Sonnet 4.6 + HITL), compliance-incident-agent (Claude Sonnet 4.6), github-issues-agent (Grok), prometheus-mcp-server, khook controller</td>
+            <td>AI orchestrator + sub-agents + incident responder + Prometheus tool server + event watcher</td>
           </tr>
           <tr>
             <td><code>istio-system</code></td>
@@ -985,7 +985,7 @@
         khookInd.style.background = 'rgba(239, 68, 68, 0.08)';
         khookInd.style.borderColor = 'rgba(239, 68, 68, 0.3)';
         khookInd.style.color = '#ef4444';
-        khookLabel.innerHTML = 'khook FIRING \u2192 bank-platform-agent auto-diagnosing';
+        khookLabel.innerHTML = 'khook FIRING \u2192 compliance-incident-agent auto-diagnosing';
       } else {
         khookInd.style.background = 'rgba(99, 102, 241, 0.06)';
         khookInd.style.borderColor = 'rgba(99, 102, 241, 0.15)';
