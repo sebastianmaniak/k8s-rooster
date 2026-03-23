@@ -47,10 +47,15 @@ k8s-rooster/
 │   ├── deployment.yaml
 │   ├── slack-mcp.yaml
 │   └── kustomization.yaml
+├── khook/                        # khook auth proxy (server-to-server auth for kagent-enterprise)
+│   ├── auth-proxy-script.yaml    # ConfigMap: Python reverse proxy
+│   ├── auth-proxy-deployment.yaml # ServiceAccount + Deployment + Service
+│   └── kustomization.yaml
 ├── kagent/                       # kagent Enterprise Helm chart ArgoCD apps
 │   ├── kagent-crds-application.yaml
 │   ├── kagent-mgmt-application.yaml
 │   ├── kagent-application.yaml
+│   ├── khook-application.yaml    # khook ArgoCD app (routes through auth proxy)
 │   └── kustomization.yaml
 ├── models/                       # Model configs (kagent ModelConfig CRs)
 ├── archive/                      # Stale raw resource dumps (not referenced by ArgoCD)
@@ -65,7 +70,8 @@ k8s-rooster/
 │   ├── terraform.tfvars.example  # Example credentials file
 │   └── README.md                 # VIP assignment table + usage
 ├── docs/                         # Reference examples and guides
-│   └── langfuse-integration.md   # Langfuse setup tutorial + architecture
+│   ├── langfuse-integration.md   # Langfuse setup tutorial + architecture
+│   └── khook-auth-proxy.html     # khook auth proxy documentation page
 └── README.md
 ```
 
@@ -117,6 +123,8 @@ This allows kagent agents to use MCP tools that are fronted by AgentGateway, get
 | `model-priority-gateway` | `gateways/model-priority/` | agentgateway-system | OpenAI model failover |
 | `mcp-servers` | `mcp/` | agentgateway-system | MCP server deployments + gateways |
 | `github-mcp-servers` | `mcp/github/` | agentgateway-system | GitHub MCP (standalone) |
+| `khook` | `kagent-dev/khook` (Helm) | kagent | K8s event watcher, triggers agents via A2A |
+| `khook-auth-proxy` | `khook/` | kagent | Auth proxy for khook → kagent-enterprise |
 | `agentgateway-policies` | `policies/` | agentgateway-system | Security policies |
 
 All applications use **auto-sync**, **selfHeal**, **prune**, and **ServerSideApply**.

@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>khook Auth Proxy — Documentation</title>
+  <style>
+    :root {
+      --bg: #0a0e17;
+      --surface: #111827;
+      --surface-light: #1f2937;
+      --border: #374151;
+      --text: #e5e7eb;
+      --text-muted: #9ca3af;
+      --accent: #6366f1;
+      --accent-light: #818cf8;
+      --green: #10b981;
+      --red: #ef4444;
+      --yellow: #f59e0b;
+      --cyan: #06b6d4;
+      --orange: #f97316;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    a { color: var(--accent-light); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Nav */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-title { font-weight: 600; font-size: 0.95rem; }
+    .nav-title span { color: var(--accent-light); }
+    .nav-links a {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-left: 24px;
+    }
+    .nav-links a:hover { color: var(--text); text-decoration: none; }
+    .nav-links a.active { color: var(--accent-light); }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 64px 20px 48px;
+      background: linear-gradient(180deg, #111827 0%, var(--bg) 100%);
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(249, 115, 22, 0.15);
+      color: var(--orange);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 20px;
+      border: 1px solid rgba(249, 115, 22, 0.3);
+    }
+    .hero h1 {
+      font-size: 2.6rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+    .hero h1 span { color: var(--accent-light); }
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* Container */
+    .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+
+    /* Section */
+    section { padding: 60px 0; }
+    section + section { border-top: 1px solid var(--border); }
+    section h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+    section h2 span { color: var(--accent-light); }
+    section > .container > p.lead {
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      font-size: 1.05rem;
+    }
+
+    /* Problem/solution cards */
+    .ps-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 24px;
+    }
+    .ps-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+    }
+    .ps-card h3 {
+      font-size: 1.05rem;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .ps-card p, .ps-card li {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+    .ps-card ul {
+      list-style: none;
+      padding: 0;
+    }
+    .ps-card ul li {
+      padding: 6px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+    .ps-card ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 14px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .ps-card.problem ul li::before { background: var(--red); }
+    .ps-card.solution ul li::before { background: var(--green); }
+
+    /* Architecture diagram */
+    .arch-diagram {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 40px 32px;
+      margin-top: 24px;
+    }
+    .arch-row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .arch-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 24px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      text-align: center;
+      min-width: 200px;
+    }
+    .arch-box.accent {
+      border-color: var(--accent);
+      background: rgba(99, 102, 241, 0.08);
+      color: var(--accent-light);
+    }
+    .arch-box.green {
+      border-color: var(--green);
+      background: rgba(16, 185, 129, 0.08);
+      color: var(--green);
+    }
+    .arch-box.orange {
+      border-color: var(--orange);
+      background: rgba(249, 115, 22, 0.08);
+      color: var(--orange);
+    }
+    .arch-box.cyan {
+      border-color: var(--cyan);
+      background: rgba(6, 182, 212, 0.08);
+      color: var(--cyan);
+    }
+    .arch-box .sub {
+      display: block;
+      font-size: 0.72rem;
+      opacity: 0.7;
+      margin-top: 4px;
+      font-weight: 400;
+    }
+    .arch-arrow {
+      color: var(--text-muted);
+      font-size: 1.3rem;
+      margin: 6px 0;
+      text-align: center;
+    }
+    .arch-label {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .arch-inject-label {
+      color: var(--orange);
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-align: center;
+      margin: 4px 0;
+      letter-spacing: 0.02em;
+    }
+
+    /* Flow steps */
+    .flow-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: 24px;
+    }
+    .flow-step {
+      display: flex;
+      gap: 20px;
+      align-items: stretch;
+    }
+    .flow-step-line {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 40px;
+      flex-shrink: 0;
+    }
+    .flow-step-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .flow-step-connector {
+      flex: 1;
+      width: 2px;
+      background: var(--border);
+    }
+    .flow-step:last-child .flow-step-connector { display: none; }
+    .flow-step-content {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 22px;
+      flex: 1;
+      margin-bottom: 12px;
+    }
+    .flow-step-content h4 { font-size: 0.95rem; margin-bottom: 4px; }
+    .flow-step-content p { color: var(--text-muted); font-size: 0.88rem; }
+
+    /* Code/terminal */
+    .terminal {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: 24px;
+    }
+    .terminal-header {
+      background: var(--surface);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .terminal-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+    }
+    .terminal-dot.r { background: var(--red); }
+    .terminal-dot.y { background: var(--yellow); }
+    .terminal-dot.g { background: var(--green); }
+    .terminal-title {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      margin-left: 8px;
+    }
+    .terminal-body {
+      padding: 20px;
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      overflow-x: auto;
+    }
+    .terminal-body .line { white-space: pre; display: block; }
+    .terminal-body .green { color: var(--green); }
+    .terminal-body .red { color: var(--red); }
+    .terminal-body .yellow { color: var(--yellow); }
+    .terminal-body .cyan { color: var(--cyan); }
+    .terminal-body .orange { color: var(--orange); }
+    .terminal-body .muted { color: #6b7280; }
+    .terminal-body .accent { color: var(--accent-light); }
+
+    /* Tables */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 0.9rem;
+    }
+    .data-table th {
+      text-align: left;
+      padding: 12px 16px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+    }
+    .data-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .data-table code {
+      background: var(--surface);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+
+    /* Tags */
+    .tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-weight: 500;
+    }
+    .tag-orange { background: rgba(249, 115, 22, 0.12); color: var(--orange); }
+    .tag-green { background: rgba(16, 185, 129, 0.12); color: var(--green); }
+    .tag-cyan { background: rgba(6, 182, 212, 0.12); color: var(--cyan); }
+    .tag-accent { background: rgba(99, 102, 241, 0.12); color: var(--accent-light); }
+    .tag-red { background: rgba(239, 68, 68, 0.12); color: var(--red); }
+
+    /* File tree */
+    .file-tree {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 28px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.84rem;
+      line-height: 1.8;
+      margin-top: 20px;
+    }
+    .file-tree .dir { color: var(--accent-light); }
+    .file-tree .file { color: var(--text); }
+    .file-tree .desc { color: var(--text-muted); font-family: -apple-system, sans-serif; font-size: 0.8rem; }
+
+    /* Info cards */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .info-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .info-card h3 {
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+    }
+    .info-card p {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+    .info-card code {
+      background: var(--bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.82rem;
+    }
+
+    /* YAML block */
+    .yaml-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      margin-top: 16px;
+    }
+    .yaml-block .key { color: var(--cyan); }
+    .yaml-block .val { color: var(--green); }
+    .yaml-block .comment { color: #6b7280; }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 700px) {
+      .hero h1 { font-size: 1.8rem; }
+      .ps-grid { grid-template-columns: 1fr; }
+      .info-grid { grid-template-columns: 1fr; }
+      .nav { padding: 12px 16px; flex-wrap: wrap; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav-title"><span>kagent</span> Bank Demo</div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="architecture.html">Architecture</a>
+      <a href="khook-auth-proxy.html" class="active">khook Auth Proxy</a>
+      <a href="khook-diagram.html">Diagram</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-badge">Server-to-Server Auth</div>
+    <h1><span>khook</span> Auth Proxy</h1>
+    <p>How khook authenticates with kagent-enterprise to trigger AI agents from Kubernetes events &mdash; without OIDC browser flows.</p>
+  </div>
+
+  <!-- Problem & Solution -->
+  <section>
+    <div class="container">
+      <h2>The <span>Problem</span></h2>
+      <p class="lead">kagent-enterprise requires OIDC authentication for all API calls. khook makes direct server-to-server requests &mdash; no browser, no cookies, no OIDC tokens.</p>
+
+      <div class="ps-grid">
+        <div class="ps-card problem" style="border-left: 3px solid var(--red);">
+          <h3><span style="color: var(--red);">&#x2717;</span> Without Auth Proxy</h3>
+          <ul>
+            <li>khook calls <code>POST /api/sessions</code> directly</li>
+            <li>Enterprise middleware rejects &mdash; no session cookie</li>
+            <li>Returns <code>HTTP 400: Failed to get user ID</code></li>
+            <li><code>AUTO_AUTH_ENABLED</code> only works for browser UI</li>
+            <li>OIDC auth code flow requires browser redirect</li>
+          </ul>
+        </div>
+        <div class="ps-card solution" style="border-left: 3px solid var(--green);">
+          <h3><span style="color: var(--green);">&#x2713;</span> With Auth Proxy</h3>
+          <ul>
+            <li>khook calls the proxy on the same port (8083)</li>
+            <li>Proxy injects K8s ServiceAccount token</li>
+            <li>Proxy adds <code>X-User-Id: admin</code> header</li>
+            <li>Controller validates SA token via JWKS</li>
+            <li>Session created, agent triggered via A2A</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Architecture -->
+  <section>
+    <div class="container">
+      <h2>Request <span>Architecture</span></h2>
+      <p class="lead">The proxy is a transparent pass-through that adds two headers. khook doesn't know it exists.</p>
+
+      <div class="arch-diagram">
+        <div class="arch-label">Event Source</div>
+        <div class="arch-row">
+          <div class="arch-box">Kubernetes Cluster Events
+            <span class="sub">pod-restart, oom-kill, CrashLoopBackOff</span>
+          </div>
+        </div>
+        <div class="arch-arrow">&darr;</div>
+
+        <div class="arch-label">Event Watcher</div>
+        <div class="arch-row">
+          <div class="arch-box cyan">khook
+            <span class="sub">Watches namespaces &middot; Matches hook rules</span>
+          </div>
+        </div>
+        <div class="arch-arrow">&darr; <span style="font-size: 0.75rem; color: var(--text-muted);">POST /api/sessions</span></div>
+
+        <div class="arch-label">Auth Injection Layer</div>
+        <div class="arch-row">
+          <div class="arch-box orange">khook-auth-proxy
+            <span class="sub">python:3.12-slim &middot; Port 8083</span>
+          </div>
+        </div>
+        <div class="arch-inject-label">+ Authorization: Bearer &lt;sa-token&gt; &nbsp;&nbsp; + X-User-Id: admin</div>
+        <div class="arch-arrow">&darr;</div>
+
+        <div class="arch-label">kagent Enterprise Controller</div>
+        <div class="arch-row">
+          <div class="arch-box accent">kagent-controller
+            <span class="sub">Validates SA token via JWKS &middot; Creates session</span>
+          </div>
+        </div>
+        <div class="arch-arrow">&darr; <span style="font-size: 0.75rem; color: var(--text-muted);">A2A SendMessage</span></div>
+
+        <div class="arch-label">Target Agent</div>
+        <div class="arch-row">
+          <div class="arch-box green">compliance-incident-agent
+            <span class="sub">Diagnoses issue &middot; Creates GitHub issue &middot; Notifies Slack</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Request Flow -->
+  <section>
+    <div class="container">
+      <h2>Request <span>Flow</span></h2>
+      <p class="lead">Step-by-step: from cluster event to agent action.</p>
+
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="flow-step-line">
+            <div class="flow-step-dot" style="background: rgba(239, 68, 68, 0.15); color: var(--red);">1</div>
+            <div class="flow-step-connector"></div>
+          </div>
+          <div class="flow-step-content">
+            <h4>Cluster Event</h4>
+            <p>A pod enters CrashLoopBackOff, gets OOM-killed, or triggers a restart event in a watched namespace.</p>
+          </div>
+        </div>
+
+        <div class="flow-step">
+          <div class="flow-step-line">
+            <div class="flow-step-dot" style="background: rgba(6, 182, 212, 0.15); color: var(--cyan);">2</div>
+            <div class="flow-step-connector"></div>
+          </div>
+          <div class="flow-step-content">
+            <h4>khook Detects &amp; Matches</h4>
+            <p>khook's event watcher sees the event and matches it against configured hooks (event type, namespace, agent target). Duplicates are suppressed.</p>
+          </div>
+        </div>
+
+        <div class="flow-step">
+          <div class="flow-step-line">
+            <div class="flow-step-dot" style="background: rgba(249, 115, 22, 0.15); color: var(--orange);">3</div>
+            <div class="flow-step-connector"></div>
+          </div>
+          <div class="flow-step-content">
+            <h4>Proxy Injects Auth</h4>
+            <p>khook sends <code>POST /api/sessions</code> to the proxy. The proxy reads the pod's mounted SA token (cached by file mtime), strips any existing auth headers, and injects <code>Authorization: Bearer &lt;token&gt;</code> + <code>X-User-Id: admin</code>.</p>
+          </div>
+        </div>
+
+        <div class="flow-step">
+          <div class="flow-step-line">
+            <div class="flow-step-dot" style="background: rgba(99, 102, 241, 0.15); color: var(--accent-light);">4</div>
+            <div class="flow-step-connector"></div>
+          </div>
+          <div class="flow-step-content">
+            <h4>Session Created</h4>
+            <p>The kagent-enterprise controller validates the K8s SA token against the cluster JWKS endpoint, accepts the X-User-Id, and creates a new session (HTTP 201). Returns a <code>contextId</code>.</p>
+          </div>
+        </div>
+
+        <div class="flow-step">
+          <div class="flow-step-line">
+            <div class="flow-step-dot" style="background: rgba(16, 185, 129, 0.15); color: var(--green);">5</div>
+            <div class="flow-step-connector"></div>
+          </div>
+          <div class="flow-step-content">
+            <h4>Agent Triggered via A2A</h4>
+            <p>khook sends an A2A SendMessage with the event context (pod name, namespace, event type, timestamps). The target agent investigates and takes action.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Files -->
+  <section>
+    <div class="container">
+      <h2>Project <span>Files</span></h2>
+      <p class="lead">Three files in the <code>khook/</code> directory, deployed via ArgoCD.</p>
+
+      <div class="file-tree">
+        <span class="dir">khook/</span><br>
+        &nbsp;&nbsp;<span class="file">kustomization.yaml</span> <span class="desc">&mdash; Bundles resources with common labels</span><br>
+        &nbsp;&nbsp;<span class="file">auth-proxy-script.yaml</span> <span class="desc">&mdash; ConfigMap: Python reverse proxy (~160 lines)</span><br>
+        &nbsp;&nbsp;<span class="file">auth-proxy-deployment.yaml</span> <span class="desc">&mdash; ServiceAccount + Deployment + Service</span><br>
+        <br>
+        <span class="dir">kagent/</span><br>
+        &nbsp;&nbsp;<span class="file">khook-application.yaml</span> <span class="desc">&mdash; ArgoCD app: points khook apiUrl at the proxy</span><br>
+        <br>
+        <span class="dir">manifests/kagent/</span><br>
+        &nbsp;&nbsp;<span class="file">khook-auth-proxy-application.yaml</span> <span class="desc">&mdash; ArgoCD app: deploys the proxy itself</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Configuration -->
+  <section>
+    <div class="container">
+      <h2><span>Configuration</span></h2>
+      <p class="lead">Environment variables control the proxy behavior. Set in <code>auth-proxy-deployment.yaml</code>.</p>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Variable</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>UPSTREAM_URL</code></td>
+            <td><code>http://kagent-controller.kagent.svc.cluster.local:8083</code></td>
+            <td>kagent-enterprise controller URL</td>
+          </tr>
+          <tr>
+            <td><code>USER_ID</code></td>
+            <td><code>admin</code></td>
+            <td>Injected as <code>X-User-Id</code> header</td>
+          </tr>
+          <tr>
+            <td><code>SA_TOKEN_PATH</code></td>
+            <td><code>/var/run/secrets/kubernetes.io/serviceaccount/token</code></td>
+            <td>Path to the mounted ServiceAccount token</td>
+          </tr>
+          <tr>
+            <td><code>LISTEN_PORT</code></td>
+            <td><code>8083</code></td>
+            <td>Port the proxy listens on</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- How khook Connects -->
+  <section>
+    <div class="container">
+      <h2>khook <span>Helm Values</span></h2>
+      <p class="lead">The khook ArgoCD application overrides <code>kagent.apiUrl</code> to route through the proxy.</p>
+
+      <div class="yaml-block">
+        <span class="comment"># kagent/khook-application.yaml</span><br>
+        <span class="key">spec</span>:<br>
+        &nbsp;&nbsp;<span class="key">source</span>:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="key">helm</span>:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">valuesObject</span>:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">kagent</span>:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Route through auth proxy instead of directly to controller</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">apiUrl</span>: <span class="val">http://khook-auth-proxy.kagent.svc.cluster.local:8083</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">userId</span>: <span class="val">admin@kagent.dev</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Proxy Internals -->
+  <section>
+    <div class="container">
+      <h2>Proxy <span>Internals</span></h2>
+      <p class="lead">A ~160-line Python script using only the standard library. No external dependencies.</p>
+
+      <div class="info-grid">
+        <div class="info-card">
+          <h3>SA Token Caching</h3>
+          <p>Reads the token file once and caches it in memory. Re-reads only when the file's mtime changes (K8s rotates projected tokens periodically).</p>
+        </div>
+        <div class="info-card">
+          <h3>Header Injection</h3>
+          <p>Strips incoming <code>Authorization</code>, <code>X-User-Id</code>, <code>Host</code>, and <code>Transfer-Encoding</code>. Injects the SA bearer token and configured user ID.</p>
+        </div>
+        <div class="info-card">
+          <h3>Streaming Response</h3>
+          <p>Reads upstream responses in 8KB chunks and streams them back. Handles both success and HTTP error responses from the controller.</p>
+        </div>
+        <div class="info-card">
+          <h3>Health Endpoint</h3>
+          <p>Separate HTTP server on port 8084 serves <code>/healthz</code>. Used by K8s readiness (3s/5s) and liveness (5s/15s) probes.</p>
+        </div>
+        <div class="info-card">
+          <h3>All HTTP Methods</h3>
+          <p>Proxies GET, POST, PUT, PATCH, DELETE, and OPTIONS. Covers the full kagent API surface (sessions, A2A, agents).</p>
+        </div>
+        <div class="info-card">
+          <h3>Resource Footprint</h3>
+          <p>CPU: 25m request / 100m limit. Memory: 32Mi request / 64Mi limit. Single replica. Uses <code>python:3.12-slim</code> base image.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Example -->
+  <section>
+    <div class="container">
+      <h2>Live <span>Example</span></h2>
+      <p class="lead">What it looks like when khook detects a CrashLoopBackOff and triggers the compliance-incident-agent.</p>
+
+      <div class="terminal">
+        <div class="terminal-header">
+          <div class="terminal-dot r"></div>
+          <div class="terminal-dot y"></div>
+          <div class="terminal-dot g"></div>
+          <span class="terminal-title">khook-auth-proxy logs</span>
+        </div>
+        <div class="terminal-body">
+          <span class="line"><span class="green">[khook-auth-proxy]</span> Starting on :8083</span>
+          <span class="line"><span class="green">[khook-auth-proxy]</span> Upstream: http://kagent-controller.kagent.svc.cluster.local:8083</span>
+          <span class="line"><span class="green">[khook-auth-proxy]</span> User ID: admin</span>
+          <span class="line"><span class="green">[khook-auth-proxy]</span> SA token loaded (1537 bytes)</span>
+          <span class="line"><span class="green">[khook-auth-proxy]</span> Health server on :8084/healthz</span>
+          <span class="line"><span class="green">[khook-auth-proxy]</span> Proxy ready</span>
+          <span class="line"></span>
+          <span class="line"><span class="muted"># Pod crashes in compliance-ops namespace...</span></span>
+          <span class="line"></span>
+          <span class="line"><span class="cyan">10.244.0.87</span> <span class="yellow">"POST /api/sessions?user_id=admin HTTP/1.1"</span> <span class="green">201</span> -</span>
+        </div>
+      </div>
+
+      <div class="terminal" style="margin-top: 16px;">
+        <div class="terminal-header">
+          <div class="terminal-dot r"></div>
+          <div class="terminal-dot y"></div>
+          <div class="terminal-dot g"></div>
+          <span class="terminal-title">khook logs</span>
+        </div>
+        <div class="terminal-body">
+          <span class="line"><span class="cyan">INFO</span>  event-watcher  EventsV1 watcher established  <span class="muted">namespace=compliance-ops</span></span>
+          <span class="line"><span class="cyan">INFO</span>  event-watcher  Starting event stream  <span class="muted">namespace=compliance-ops</span></span>
+          <span class="line"></span>
+          <span class="line"><span class="muted"># CrashLoopBackOff detected...</span></span>
+          <span class="line"></span>
+          <span class="line"><span class="yellow">INFO</span>  hook-executor  Triggering agent  <span class="muted">agent=compliance-incident-agent</span></span>
+          <span class="line"><span class="green">INFO</span>  hook-executor  Session created  <span class="muted">contextId=ctx-fa5151b4-7c3b-4cba-a079-c8f948d6dcee</span></span>
+          <span class="line"><span class="green">INFO</span>  hook-executor  A2A message sent  <span class="muted">status=ok</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Troubleshooting -->
+  <section>
+    <div class="container">
+      <h2><span>Troubleshooting</span></h2>
+      <p class="lead">Quick diagnostic commands when things aren't working.</p>
+
+      <div class="terminal">
+        <div class="terminal-header">
+          <div class="terminal-dot r"></div>
+          <div class="terminal-dot y"></div>
+          <div class="terminal-dot g"></div>
+          <span class="terminal-title">diagnostic commands</span>
+        </div>
+        <div class="terminal-body">
+          <span class="line"><span class="muted"># Check proxy pod status</span></span>
+          <span class="line"><span class="accent">$</span> kubectl get pods -n kagent -l app=khook-auth-proxy</span>
+          <span class="line"></span>
+          <span class="line"><span class="muted"># View proxy logs (look for "Proxy ready" and "SA token loaded")</span></span>
+          <span class="line"><span class="accent">$</span> kubectl logs -n kagent -l app=khook-auth-proxy</span>
+          <span class="line"></span>
+          <span class="line"><span class="muted"># Verify SA token is mounted and non-empty</span></span>
+          <span class="line"><span class="accent">$</span> kubectl exec -n kagent deploy/khook-auth-proxy -- \</span>
+          <span class="line">    wc -c /var/run/secrets/kubernetes.io/serviceaccount/token</span>
+          <span class="line"></span>
+          <span class="line"><span class="muted"># Test proxy health endpoint</span></span>
+          <span class="line"><span class="accent">$</span> kubectl exec -n kagent deploy/khook-auth-proxy -- \</span>
+          <span class="line">    python3 -c "import urllib.request; print(urllib.request.urlopen('http://localhost:8084/healthz').read())"</span>
+          <span class="line"></span>
+          <span class="line"><span class="muted"># Check that khook is pointed at the proxy (not controller)</span></span>
+          <span class="line"><span class="accent">$</span> kubectl get cm khook-config -n kagent -o jsonpath='{.data.config\.yaml}' | grep apiUrl</span>
+          <span class="line"></span>
+          <span class="line"><span class="muted"># Check khook logs for session creation</span></span>
+          <span class="line"><span class="accent">$</span> kubectl logs -n kagent -l app.kubernetes.io/name=khook --tail=50</span>
+        </div>
+      </div>
+
+      <table class="data-table" style="margin-top: 32px;">
+        <thead>
+          <tr>
+            <th>Symptom</th>
+            <th>Cause</th>
+            <th>Fix</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>HTTP 400</code> &mdash; "no session found"</td>
+            <td>khook is hitting the controller directly, bypassing the proxy</td>
+            <td>Check <code>kagent.apiUrl</code> in khook helm values points to <code>khook-auth-proxy</code></td>
+          </tr>
+          <tr>
+            <td><code>HTTP 401</code> &mdash; "unauthorized"</td>
+            <td>SA token is empty or expired</td>
+            <td>Check the SA token file is mounted and non-empty. Verify the ServiceAccount exists</td>
+          </tr>
+          <tr>
+            <td><code>HTTP 403</code> &mdash; "permission denied"</td>
+            <td>SA token is valid but missing the <code>X-User-Id</code> header</td>
+            <td>Verify the <code>USER_ID</code> env var is set in the proxy deployment</td>
+          </tr>
+          <tr>
+            <td><code>HTTP 502</code> &mdash; "upstream error"</td>
+            <td>Proxy can't reach the kagent controller</td>
+            <td>Check <code>UPSTREAM_URL</code> env var and that kagent-controller service exists</td>
+          </tr>
+          <tr>
+            <td>Proxy pod in CrashLoopBackOff</td>
+            <td>Python script error or missing ConfigMap mount</td>
+            <td>Check that ConfigMap <code>khook-auth-proxy-script</code> exists and is mounted at <code>/app</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Why Not OIDC -->
+  <section>
+    <div class="container">
+      <h2>Why Not <span>OIDC</span>?</h2>
+      <p class="lead">We investigated every OIDC path before landing on the SA token approach.</p>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Approach</th>
+            <th>Result</th>
+            <th>Why It Failed</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tag tag-red">Failed</span> &nbsp;OIDC client_credentials</td>
+            <td><code>invalid_client</code></td>
+            <td>Auto IDP has no clients configured for client_credentials grant</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-red">Failed</span> &nbsp;OIDC password grant</td>
+            <td><code>not supported</code></td>
+            <td>Auto IDP explicitly disables the password grant type</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-red">Failed</span> &nbsp;OIDC auth code flow</td>
+            <td>Connection dropped</td>
+            <td>The /authorize endpoint only responds to browser JavaScript, drops non-browser TCP connections</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-red">Failed</span> &nbsp;Self-signed JWT</td>
+            <td><code>HTTP 401</code></td>
+            <td>Controller validates API tokens against the OIDC issuer JWKS, not its own signing key</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-red">Failed</span> &nbsp;SA token alone</td>
+            <td><code>HTTP 403</code></td>
+            <td>Token authenticates but SA has no OIDC Groups claim, so RBAC maps to no role</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-green">Works</span> &nbsp;SA token + X-User-Id</td>
+            <td><code>HTTP 201</code></td>
+            <td>Combined headers bypass OIDC session requirement for API session creation</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>khook Auth Proxy &mdash; Part of the <a href="index.html">kagent Bank Platform Demo</a></p>
+    <p style="margin-top: 8px;">k8s-rooster &middot; maniak-rooster cluster &middot; Talos Linux</p>
+  </footer>
+
+</body>
+</html>
