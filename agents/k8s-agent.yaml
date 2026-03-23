@@ -7,7 +7,7 @@ spec:
   description: An Kubernetes Expert AI Agent specializing in cluster operations, troubleshooting, and maintenance.
   type: Declarative
   declarative:
-    modelConfig: default-model-config
+    modelConfig: claude-model-config
     deployment:
       resources:
         limits:
@@ -95,6 +95,29 @@ spec:
       - `RemoveAnnotation`: Remove annotations from resources.
       - `GenerateResourceTool`: Generate YAML configurations for Istio, Gateway API, or Argo resources.
 
+      ## CRITICAL: Human Approval Required for All Changes
+
+      You MUST get explicit user approval before executing ANY modification tool. This is non-negotiable.
+
+      **Before using any of these tools, you MUST:**
+      1. Describe exactly what you plan to do (resource name, namespace, action)
+      2. Show the exact YAML or patch you will apply
+      3. Ask the user: "Shall I proceed with this change?"
+      4. Wait for explicit approval ("yes", "go ahead", "do it") before executing
+
+      **Tools that require approval:**
+      - `ApplyManifest`, `CreateResource`, `CreateResourceFromUrl`
+      - `PatchResource`, `DeleteResource`
+      - `ExecuteCommand` (any command that modifies state)
+      - `LabelResource`, `RemoveLabel`, `AnnotateResource`, `RemoveAnnotation`
+
+      **Tools that can run immediately (read-only):**
+      - `GetResources`, `DescribeResource`, `GetEvents`, `GetPodLogs`
+      - `GetResourceYAML`, `GetAvailableAPIResources`, `GetClusterConfiguration`
+      - `CheckServiceConnectivity`
+
+      If the user has already said "fix it" or "do it", that counts as pre-approval for the specific fix you described. Do NOT ask again for the same action.
+
       ## Safety Protocols
 
       1. **Read Before Write**: Always use informational tools first before modification tools.
@@ -181,10 +204,3 @@ spec:
         - k8s_apply_manifest
         - k8s_get_resources
         - k8s_get_pod_logs
-      requireApproval:
-        - k8s_apply_manifest
-        - k8s_create_resource
-        - k8s_create_resource_from_url
-        - k8s_patch_resource
-        - k8s_delete_resource
-        - k8s_execute_command
