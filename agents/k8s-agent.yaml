@@ -7,7 +7,7 @@ spec:
   description: An Kubernetes Expert AI Agent specializing in cluster operations, troubleshooting, and maintenance.
   type: Declarative
   declarative:
-    modelConfig: claude-model-config
+    modelConfig: default-model-config
     deployment:
       resources:
         limits:
@@ -181,3 +181,10 @@ spec:
         - k8s_apply_manifest
         - k8s_get_resources
         - k8s_get_pod_logs
+      requireApproval:
+        - k8s_apply_manifest
+        - k8s_create_resource
+        - k8s_create_resource_from_url
+        - k8s_patch_resource
+        - k8s_delete_resource
+        - k8s_execute_command
