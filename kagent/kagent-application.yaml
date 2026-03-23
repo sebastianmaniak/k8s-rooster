@@ -57,6 +57,13 @@ spec:
             enabled: true
           promql-agent:
             enabled: true
+  ignoreDifferences:
+  - group: kagent.dev
+    kind: ModelConfig
+    name: default-model-config
+    jsonPointers:
+    - /spec/model
+    - /spec/openAI
   syncPolicy:
     automated:
       prune: true
