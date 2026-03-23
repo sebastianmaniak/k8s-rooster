@@ -3,6 +3,10 @@ kind: Kustomization
 
 resources:
   - github-mcp-remote.yaml
+  - f5-bigip-mcp.yaml
+  - f5-wrapper-deployment.yaml
+  - fortigate-mcp.yaml
+  - fortigate-mcp-deployment.yaml
 
 commonLabels:
   app.kubernetes.io/name: kagent-tool-servers

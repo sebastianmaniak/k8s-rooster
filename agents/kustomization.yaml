@@ -6,6 +6,8 @@ resources:
   - compliance-incident-agent.yaml
   - github-issues-agent.yaml
   - github-pr-agent.yaml
+  - f5-bigip-agent.yaml
+  - fortigate-agent.yaml
 
 commonLabels:
   app.kubernetes.io/name: kagent-agents

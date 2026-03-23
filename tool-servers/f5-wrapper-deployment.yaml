@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: f5-wrapper-bigip
+  namespace: kagent
+  labels:
+    app: f5-wrapper-bigip
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: f5-wrapper-bigip
+  template:
+    metadata:
+      labels:
+        app: f5-wrapper-bigip
+    spec:
+      containers:
+      - name: f5-wrapper
+        image: sebbycorp/f5-wrapper:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: F5_HOST
+          valueFrom:
+            secretKeyRef:
+              name: f5-bigip-credentials
+              key: host
+        - name: F5_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: f5-bigip-credentials
+              key: username
+        - name: F5_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: f5-bigip-credentials
+              key: password
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: f5-wrapper-bigip
+  namespace: kagent
+  labels:
+    app: f5-wrapper-bigip
+spec:
+  selector:
+    app: f5-wrapper-bigip
+  ports:
+  - port: 8080
+    targetPort: 8080
+    protocol: TCP
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: f5-wrapper-bigip-egress
+  namespace: kagent
+spec:
+  podSelector:
+    matchLabels:
+      app: f5-wrapper-bigip
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 10.0.0.0/8
+    ports:
+    - port: 443
+      protocol: TCP

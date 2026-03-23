@@ -1,0 +1,11 @@
+apiVersion: kagent.dev/v1alpha2
+kind: RemoteMCPServer
+metadata:
+  name: f5-bigip-mcp
+  namespace: kagent
+spec:
+  description: F5 BIG-IP iControl REST API wrapper MCP server
+  url: http://f5-wrapper-bigip.kagent:8080/mcp/mcp
+  protocol: STREAMABLE_HTTP
+  timeout: 10s
+  terminateOnClose: true
