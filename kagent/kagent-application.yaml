@@ -45,9 +45,17 @@ spec:
             enabled: true
           kgateway-agent:
             enabled: true
-          observability-agent:
-            enabled: false
           helm-agent:
+            enabled: true
+          observability-agent:
+            enabled: true
+          istio-agent:
+            enabled: true
+          cilium-crd-agent:
+            enabled: true
+          argo-rollouts-conversion-agent:
+            enabled: true
+          promql-agent:
             enabled: true
   syncPolicy:
     automated:
