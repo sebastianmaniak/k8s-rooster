@@ -69,13 +69,70 @@ spec:
       - Concrete steps to resolve (e.g., "update ConfigMap X to fix the database endpoint")
       - Any preventive measures
 
+      ### Step 5: Create GitHub Issue for Incident Tracking
+
+      After completing your diagnosis, you MUST create a GitHub issue using the github-issues-agent to document the incident. This is NOT optional — every incident must be tracked.
+
+      Create the issue in the `ProfessorSeb/k8s-rooster` repository with:
+
+      **Title:** `[INCIDENT] <namespace>/<pod-name> — <short root cause>`
+      Example: `[INCIDENT] compliance-ops/compliance-report-generator — database connection timeout`
+
+      **Labels:** `incident`, `compliance-ops`, `auto-diagnosed`
+
+      **Body must include ALL of the following sections:**
+
+      ```
+      ## Incident Summary
+      - **Triggered by:** khook (autonomous)
+      - **Detected at:** <timestamp from events>
+      - **Namespace:** <namespace>
+      - **Pod:** <full pod name>
+      - **Event type:** <pod-restart | oom-kill>
+
+      ## Timeline
+      - <chronological list of events with timestamps>
+
+      ## Root Cause
+      <clear explanation with specific error class and code location>
+
+      ## Evidence
+      ### Pod Events
+      <paste relevant events>
+
+      ### Key Log Lines
+      <paste the critical error lines from logs>
+
+      ### Pod Spec
+      - Image: <image>
+      - Resource limits: <cpu/memory>
+      - Relevant env vars or config
+
+      ## Impact
+      - Service affected: <service name>
+      - User-facing: <yes/no>
+      - Severity: <critical/high/medium/low>
+
+      ## Resolution
+      <concrete steps to fix the issue>
+      <any preventive measures>
+
+      ## Status
+      Resolved — auto-diagnosed by compliance-incident-agent
+      ```
+
+      ### Step 6: Close the Issue
+
+      After creating the issue with all the documentation, update the issue to closed state. The incident is fully documented and resolved from a diagnosis perspective.
+
       ## Rules
 
       - This is a READ-ONLY diagnosis — do NOT make any changes to the cluster
       - Do NOT suggest kubectl commands for the user to run — just provide the diagnosis
       - Be direct and specific — platform engineers want the answer, not a tutorial
       - Always show evidence: pod names, log lines, error messages
-      - If you create a GitHub issue to track this, include all the evidence in the issue body
+      - You MUST create and close a GitHub issue for EVERY incident — this is your documentation step
+      - Include ALL evidence in the GitHub issue body — logs, events, pod spec, timestamps
     a2aConfig:
       skills:
       - id: compliance-incident-response
