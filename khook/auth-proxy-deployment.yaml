@@ -1,3 +1,9 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: khook-auth-proxy
+  namespace: kagent
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,6 +21,7 @@ spec:
       labels:
         app: khook-auth-proxy
     spec:
+      serviceAccountName: khook-auth-proxy
       containers:
       - name: proxy
         image: python:3.12-slim
@@ -25,55 +32,12 @@ spec:
         - name: health
           containerPort: 8084
         env:
-        # --- Upstream (kagent-controller) ---
         - name: UPSTREAM_URL
           value: "http://kagent-controller.kagent.svc.cluster.local:8083"
-        # --- OIDC Configuration ---
-        # Option A: Direct token URL (if you know it)
-        # - name: IDP_TOKEN_URL
-        #   value: "http://solo-enterprise-ui.kagent:8080/idp/token"
-        # Option B: Discovery from issuer (auto-discovers token endpoint)
-        - name: IDP_ISSUER
-          valueFrom:
-            configMapKeyRef:
-              name: khook-auth-proxy-config
-              key: idp-issuer
-        # --- Client credentials ---
-        - name: CLIENT_ID
-          valueFrom:
-            configMapKeyRef:
-              name: khook-auth-proxy-config
-              key: client-id
-        - name: CLIENT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: khook-auth-proxy-oidc
-              key: client-secret
-        # --- Grant type: client_credentials (production) or password (auto IDP) ---
-        - name: GRANT_TYPE
-          valueFrom:
-            configMapKeyRef:
-              name: khook-auth-proxy-config
-              key: grant-type
-        # --- For password grant (auto IDP only) ---
-        - name: IDP_USERNAME
-          valueFrom:
-            configMapKeyRef:
-              name: khook-auth-proxy-config
-              key: idp-username
-              optional: true
-        - name: IDP_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: khook-auth-proxy-oidc
-              key: idp-password
-              optional: true
-        # --- User identity injected into X-User-ID header ---
         - name: USER_ID
-          valueFrom:
-            configMapKeyRef:
-              name: khook-auth-proxy-config
-              key: user-id
+          value: "admin"
+        - name: SA_TOKEN_PATH
+          value: "/var/run/secrets/kubernetes.io/serviceaccount/token"
         volumeMounts:
         - name: script
           mountPath: /app

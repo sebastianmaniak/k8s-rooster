@@ -7,174 +7,93 @@ data:
   proxy.py: |
     #!/usr/bin/env python3
     """
-    khook-auth-proxy: Authenticating reverse proxy for khook -> kagent-enterprise.
+    khook-auth-proxy: Injects K8s SA token + X-User-Id into requests
+    from khook before forwarding to kagent-controller.
 
-    Sits between khook and kagent-controller. Obtains OIDC tokens via
-    client_credentials or password grant and injects Authorization + X-User-ID
-    headers before forwarding requests upstream.
+    kagent-enterprise accepts K8s ServiceAccount tokens for authentication
+    when paired with an X-User-Id header for identity. This proxy reads
+    the pod's mounted SA token and injects both headers automatically.
 
     Environment variables:
-      UPSTREAM_URL     - kagent-controller URL (default: http://kagent-controller.kagent.svc.cluster.local:8083)
-      IDP_TOKEN_URL    - OIDC token endpoint (direct URL, takes precedence over IDP_ISSUER)
-      IDP_ISSUER       - OIDC issuer URL (used for .well-known discovery if IDP_TOKEN_URL not set)
-      CLIENT_ID        - OIDC client ID (default: kagent-enterprise)
-      CLIENT_SECRET    - OIDC client secret
-      GRANT_TYPE       - OAuth2 grant type: client_credentials or password (default: client_credentials)
-      IDP_USERNAME     - Username for password grant (default: admin)
-      IDP_PASSWORD     - Password for password grant
-      USER_ID          - X-User-ID header value (default: admin@kagent.dev)
-      LISTEN_PORT      - Proxy listen port (default: 8083)
-      SCOPE            - OAuth2 scope (default: openid email profile)
+      UPSTREAM_URL  - kagent-controller URL (default: http://kagent-controller.kagent.svc.cluster.local:8083)
+      USER_ID       - X-User-Id header value (default: admin)
+      LISTEN_PORT   - Proxy listen port (default: 8083)
+      SA_TOKEN_PATH - Path to SA token file (default: /var/run/secrets/kubernetes.io/serviceaccount/token)
     """
 
     from http.server import HTTPServer, BaseHTTPRequestHandler
     import urllib.request
-    import urllib.parse
     import urllib.error
-    import json
-    import time
     import os
-    import ssl
     import threading
-    import sys
+    import time
 
-    # --- Configuration ---
     UPSTREAM_URL = os.environ.get("UPSTREAM_URL", "http://kagent-controller.kagent.svc.cluster.local:8083")
-    IDP_TOKEN_URL = os.environ.get("IDP_TOKEN_URL", "")
-    IDP_ISSUER = os.environ.get("IDP_ISSUER", "")
-    CLIENT_ID = os.environ.get("CLIENT_ID", "kagent-enterprise")
-    CLIENT_SECRET = os.environ.get("CLIENT_SECRET", "")
-    GRANT_TYPE = os.environ.get("GRANT_TYPE", "client_credentials")
-    IDP_USERNAME = os.environ.get("IDP_USERNAME", "admin")
-    IDP_PASSWORD = os.environ.get("IDP_PASSWORD", "")
-    USER_ID = os.environ.get("USER_ID", "admin@kagent.dev")
+    USER_ID = os.environ.get("USER_ID", "admin")
     LISTEN_PORT = int(os.environ.get("LISTEN_PORT", "8083"))
-    SCOPE = os.environ.get("SCOPE", "openid email profile")
+    SA_TOKEN_PATH = os.environ.get("SA_TOKEN_PATH", "/var/run/secrets/kubernetes.io/serviceaccount/token")
 
-    # --- TLS context (skip verify for internal services) ---
-    TLS_CTX = ssl.create_default_context()
-    TLS_CTX.check_hostname = False
-    TLS_CTX.verify_mode = ssl.CERT_NONE
-
-    # --- Token cache ---
     _lock = threading.Lock()
-    _cache = {"token": None, "expires_at": 0}
-    _token_url_cache = {"url": None}
+    _token_cache = {"token": None, "mtime": 0}
 
 
     def log(msg):
         print(f"[khook-auth-proxy] {msg}", flush=True)
 
 
-    def discover_token_endpoint():
-        """Discover token endpoint from OIDC issuer via .well-known."""
-        if _token_url_cache["url"]:
-            return _token_url_cache["url"]
-
-        if IDP_TOKEN_URL:
-            _token_url_cache["url"] = IDP_TOKEN_URL
-            return IDP_TOKEN_URL
-
-        if not IDP_ISSUER:
-            raise ValueError("Either IDP_TOKEN_URL or IDP_ISSUER must be set")
-
-        discovery = f"{IDP_ISSUER.rstrip('/')}/.well-known/openid-configuration"
-        log(f"Discovering token endpoint from {discovery}")
-        req = urllib.request.Request(discovery)
-        resp = urllib.request.urlopen(req, context=TLS_CTX, timeout=10)
-        config = json.loads(resp.read())
-        url = config["token_endpoint"]
-        _token_url_cache["url"] = url
-        log(f"Token endpoint: {url}")
-        return url
-
-
-    def fetch_token():
-        """Obtain a fresh access token from the IDP."""
-        token_url = discover_token_endpoint()
-
-        params = {
-            "grant_type": GRANT_TYPE,
-            "client_id": CLIENT_ID,
-            "scope": SCOPE,
-        }
-        if CLIENT_SECRET:
-            params["client_secret"] = CLIENT_SECRET
-        if GRANT_TYPE == "password":
-            params["username"] = IDP_USERNAME
-            params["password"] = IDP_PASSWORD
-
-        data = urllib.parse.urlencode(params).encode()
-        req = urllib.request.Request(token_url, data=data, headers={
-            "Content-Type": "application/x-www-form-urlencoded",
-        })
-
-        resp = urllib.request.urlopen(req, context=TLS_CTX, timeout=15)
-        result = json.loads(resp.read())
-
-        if "access_token" not in result:
-            raise RuntimeError(f"Token response missing access_token: {result}")
-
-        expires_in = result.get("expires_in", 3600)
-        log(f"Token obtained, expires in {expires_in}s")
-        return result["access_token"], time.time() + expires_in
-
-
-    def get_token():
-        """Get a valid token, refreshing if expired or about to expire."""
+    def get_sa_token():
+        """Read the SA token from the mounted file, with caching."""
         with _lock:
-            now = time.time()
-            if _cache["token"] and _cache["expires_at"] > now + 60:
-                return _cache["token"]
-            token, expires_at = fetch_token()
-            _cache["token"] = token
-            _cache["expires_at"] = expires_at
-            return token
+            try:
+                mtime = os.path.getmtime(SA_TOKEN_PATH)
+            except OSError:
+                mtime = 0
+
+            if _token_cache["token"] and _token_cache["mtime"] == mtime:
+                return _token_cache["token"]
+
+            try:
+                with open(SA_TOKEN_PATH) as f:
+                    token = f.read().strip()
+                _token_cache["token"] = token
+                _token_cache["mtime"] = mtime
+                return token
+            except FileNotFoundError:
+                log(f"WARNING: SA token not found at {SA_TOKEN_PATH}")
+                return ""
 
 
     class ProxyHandler(BaseHTTPRequestHandler):
-        """Reverse proxy that injects OIDC auth into upstream requests."""
+        """Reverse proxy that injects SA token + X-User-Id headers."""
 
         def _proxy(self):
-            # Read request body
             content_length = int(self.headers.get("Content-Length", 0))
             body = self.rfile.read(content_length) if content_length > 0 else None
 
-            # Obtain auth token
-            try:
-                token = get_token()
-            except Exception as e:
-                log(f"ERROR obtaining token: {e}")
-                self.send_error(502, f"Auth proxy failed to obtain token: {e}")
-                return
-
-            # Build upstream URL
             upstream = f"{UPSTREAM_URL}{self.path}"
+            token = get_sa_token()
 
-            # Forward headers, inject auth
             headers = {}
             for key in self.headers:
-                lower = key.lower()
-                if lower not in ("host", "authorization", "x-user-id", "transfer-encoding"):
+                if key.lower() not in ("host", "authorization", "x-user-id", "transfer-encoding"):
                     headers[key] = self.headers[key]
-            headers["Authorization"] = f"Bearer {token}"
-            headers["X-User-ID"] = USER_ID
 
-            # Proxy the request
+            if token:
+                headers["Authorization"] = f"Bearer {token}"
+            headers["X-User-Id"] = USER_ID
+
             try:
                 req = urllib.request.Request(
                     upstream, data=body, headers=headers, method=self.command
                 )
-                resp = urllib.request.urlopen(req, context=TLS_CTX, timeout=600)
+                resp = urllib.request.urlopen(req, timeout=600)
 
-                # Send response status + headers
                 self.send_response(resp.status)
                 for key, val in resp.headers.items():
                     if key.lower() not in ("transfer-encoding", "connection"):
                         self.send_header(key, val)
                 self.end_headers()
 
-                # Stream response body in chunks
                 while True:
                     chunk = resp.read(8192)
                     if not chunk:
@@ -183,7 +102,6 @@ data:
                     self.wfile.flush()
 
             except urllib.error.HTTPError as e:
-                log(f"Upstream returned {e.code} for {self.command} {self.path}")
                 self.send_response(e.code)
                 for key, val in e.headers.items():
                     if key.lower() not in ("transfer-encoding", "connection"):
@@ -196,7 +114,6 @@ data:
                 log(f"ERROR proxying {self.command} {self.path}: {e}")
                 self.send_error(502, f"Upstream error: {e}")
 
-        # Route all methods through the proxy
         do_GET = _proxy
         do_POST = _proxy
         do_PUT = _proxy
@@ -209,8 +126,6 @@ data:
 
 
     class HealthHandler(BaseHTTPRequestHandler):
-        """Simple health check server on a separate port."""
-
         def do_GET(self):
             if self.path == "/healthz":
                 self.send_response(200)
@@ -221,37 +136,28 @@ data:
                 self.send_error(404)
 
         def log_message(self, fmt, *args):
-            pass  # Silence health check logs
+            pass
 
 
     def main():
         log(f"Starting on :{LISTEN_PORT}")
         log(f"Upstream: {UPSTREAM_URL}")
-        log(f"Grant type: {GRANT_TYPE}")
-        log(f"Client ID: {CLIENT_ID}")
         log(f"User ID: {USER_ID}")
+        log(f"SA token path: {SA_TOKEN_PATH}")
 
-        if not IDP_TOKEN_URL and not IDP_ISSUER:
-            log("WARNING: Neither IDP_TOKEN_URL nor IDP_ISSUER is set!")
-            log("Set one of these to enable token acquisition.")
+        token = get_sa_token()
+        if token:
+            log(f"SA token loaded ({len(token)} bytes)")
+        else:
+            log("WARNING: No SA token available")
 
-        # Pre-warm token cache
-        try:
-            get_token()
-            log("Token pre-warm successful")
-        except Exception as e:
-            log(f"WARNING: Token pre-warm failed: {e} (will retry on first request)")
-
-        # Start health check server on port 8084
-        health_server = HTTPServer(("0.0.0.0", 8084), HealthHandler)
-        health_thread = threading.Thread(target=health_server.serve_forever, daemon=True)
-        health_thread.start()
+        health = HTTPServer(("0.0.0.0", 8084), HealthHandler)
+        threading.Thread(target=health.serve_forever, daemon=True).start()
         log("Health server on :8084/healthz")
 
-        # Start proxy server
-        proxy_server = HTTPServer(("0.0.0.0", LISTEN_PORT), ProxyHandler)
-        log(f"Proxy ready, forwarding to {UPSTREAM_URL}")
-        proxy_server.serve_forever()
+        server = HTTPServer(("0.0.0.0", LISTEN_PORT), ProxyHandler)
+        log("Proxy ready")
+        server.serve_forever()
 
 
     if __name__ == "__main__":

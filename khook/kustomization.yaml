@@ -3,9 +3,7 @@ kind: Kustomization
 
 resources:
   - auth-proxy-script.yaml
-  - auth-proxy-config.yaml
   - auth-proxy-deployment.yaml
-  - auth-proxy-secret.yaml
 
 commonLabels:
   app.kubernetes.io/name: khook-auth-proxy
