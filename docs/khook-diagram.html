@@ -4,154 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>khook Auth Proxy — Diagram</title>
+  <link rel="stylesheet" href="paper-theme.css">
   <style>
-    :root {
-      --bg: #0a0e17;
-      --surface: #111827;
-      --border: #374151;
-      --text: #e5e7eb;
-      --text-muted: #9ca3af;
-      --accent: #6366f1;
-      --accent-light: #818cf8;
-      --green: #10b981;
-      --red: #ef4444;
-      --yellow: #f59e0b;
-      --cyan: #06b6d4;
-      --orange: #f97316;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-    }
-    a { color: var(--accent-light); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-
-    .nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 32px;
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-title { font-weight: 600; font-size: 0.95rem; }
-    .nav-title span { color: var(--accent-light); }
-    .nav-links a {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-left: 24px;
-    }
-    .nav-links a:hover { color: var(--text); text-decoration: none; }
-    .nav-links a.active { color: var(--accent-light); }
-
-    h1 {
-      text-align: center;
-      font-size: 2.2rem;
-      font-weight: 700;
-      padding: 48px 20px 8px;
-      letter-spacing: -0.03em;
-    }
-    h1 span { color: var(--accent-light); }
-    .subtitle {
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 1.05rem;
-      margin-bottom: 24px;
-    }
-
-    .legend {
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-      flex-wrap: wrap;
-      margin-bottom: 40px;
-    }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.82rem;
-      color: var(--text-muted);
-    }
-    .legend-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-    }
-
-    .diagram-wrap {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 20px 40px;
-    }
-
+    /* Page-specific: SVG diagram styles */
+    .diagram-wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px 40px; }
     svg { width: 100%; height: auto; }
-    svg text {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
-
-    /* Sequence section */
-    .seq-section {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 40px 20px 60px;
-      border-top: 1px solid var(--border);
-    }
-    .seq-section h2 {
-      font-size: 1.6rem;
-      font-weight: 600;
-      margin-bottom: 12px;
-      letter-spacing: -0.02em;
-    }
-    .seq-section h2 span { color: var(--accent-light); }
-    .seq-section > p {
-      color: var(--text-muted);
-      margin-bottom: 28px;
-      font-size: 1.02rem;
-    }
-
-    /* Sequence diagram container */
-    .seq-wrap {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    /* Header injection detail */
-    .header-detail {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 40px 20px 60px;
-      border-top: 1px solid var(--border);
-    }
-    .header-detail h2 {
-      font-size: 1.6rem;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-    .header-detail h2 span { color: var(--accent-light); }
-    .header-detail > p {
-      color: var(--text-muted);
-      margin-bottom: 28px;
-      font-size: 1.02rem;
-    }
-
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 40px 20px;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-    }
-    footer a { color: var(--accent-light); }
-
-    @media (max-width: 640px) {
-      h1 { font-size: 1.6rem; }
-      .legend { gap: 12px; }
-      .nav { padding: 12px 16px; flex-wrap: wrap; gap: 8px; }
-    }
+    .legend { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 40px; }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--text-muted); }
+    .legend-dot { width: 10px; height: 10px; }
+    h1 { text-align: center; font-size: 2.2rem; font-weight: 300; padding: 48px 20px 8px; letter-spacing: -0.02em; color: var(--ink); }
+    h1 span { color: var(--accent); font-weight: 600; }
+    .subtitle { text-align: center; color: var(--text-muted); font-size: 1.02rem; margin-bottom: 24px; }
+    .seq-section { max-width: 960px; margin: 0 auto; padding: 40px 20px 60px; border-top: 1px solid var(--border); }
+    .seq-section h2 { font-size: 1.6rem; font-weight: 300; margin-bottom: 12px; }
+    .seq-section h2 span { color: var(--accent); font-weight: 600; }
+    .seq-section > p { color: var(--text-muted); margin-bottom: 28px; font-size: 1.02rem; }
+    .seq-wrap { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+    .header-detail { max-width: 960px; margin: 0 auto; padding: 40px 20px 60px; border-top: 1px solid var(--border); }
+    .header-detail h2 { font-size: 1.6rem; font-weight: 300; margin-bottom: 12px; }
+    .header-detail h2 span { color: var(--accent); font-weight: 600; }
+    .header-detail > p { color: var(--text-muted); margin-bottom: 28px; font-size: 1.02rem; }
   </style>
 </head>
 <body>
@@ -183,25 +55,25 @@
     <svg viewBox="0 0 1060 920" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-          <path d="M0,0 L8,3 L0,6" fill="#6b7280"/>
+          <path d="M0,0 L8,3 L0,6" fill="#a89e8e"/>
         </marker>
         <marker id="arr-red" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-          <path d="M0,0 L8,3 L0,6" fill="#ef4444"/>
+          <path d="M0,0 L8,3 L0,6" fill="#b33a3a"/>
         </marker>
         <marker id="arr-cyan" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-          <path d="M0,0 L8,3 L0,6" fill="#06b6d4"/>
+          <path d="M0,0 L8,3 L0,6" fill="#2d7d8e"/>
         </marker>
         <marker id="arr-orange" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-          <path d="M0,0 L8,3 L0,6" fill="#f97316"/>
+          <path d="M0,0 L8,3 L0,6" fill="#c4652f"/>
         </marker>
         <marker id="arr-accent" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-          <path d="M0,0 L8,3 L0,6" fill="#818cf8"/>
+          <path d="M0,0 L8,3 L0,6" fill="#3a72b0"/>
         </marker>
         <marker id="arr-green" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-          <path d="M0,0 L8,3 L0,6" fill="#10b981"/>
+          <path d="M0,0 L8,3 L0,6" fill="#3a7d44"/>
         </marker>
         <marker id="arr-yellow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-          <path d="M0,0 L8,3 L0,6" fill="#f59e0b"/>
+          <path d="M0,0 L8,3 L0,6" fill="#c4882f"/>
         </marker>
 
         <!-- Glow filters -->
@@ -216,184 +88,184 @@
       </defs>
 
       <!-- ======== KUBERNETES CLUSTER BOUNDARY ======== -->
-      <rect x="30" y="20" width="1000" height="880" rx="16" fill="none" stroke="#10b981" stroke-width="1" stroke-dasharray="10,5" opacity="0.4"/>
-      <text x="530" y="14" text-anchor="middle" fill="#10b981" font-size="11" font-weight="600" letter-spacing="0.1em" opacity="0.6">KUBERNETES CLUSTER &middot; kagent NAMESPACE</text>
+      <rect x="30" y="20" width="1000" height="880" rx="16" fill="none" stroke="#3a7d44" stroke-width="1" stroke-dasharray="10,5" opacity="0.4"/>
+      <text x="530" y="14" text-anchor="middle" fill="#3a7d44" font-size="11" font-weight="600" letter-spacing="0.1em" opacity="0.6">KUBERNETES CLUSTER &middot; kagent NAMESPACE</text>
 
       <!-- ======== ROW 1: EVENT SOURCE ======== -->
-      <text x="530" y="58" text-anchor="middle" fill="#9ca3af" font-size="11" font-weight="600" letter-spacing="0.08em">WATCHED NAMESPACES</text>
+      <text x="530" y="58" text-anchor="middle" fill="#7a6f5f" font-size="11" font-weight="600" letter-spacing="0.08em">WATCHED NAMESPACES</text>
 
       <!-- compliance-ops namespace -->
-      <rect x="80" y="72" width="260" height="80" rx="12" fill="#111827" stroke="#10b981" stroke-width="1.5"/>
-      <text x="210" y="96" text-anchor="middle" fill="#10b981" font-size="13" font-weight="700">compliance-ops</text>
-      <rect x="100" y="110" width="220" height="30" rx="6" fill="rgba(239,68,68,0.08)" stroke="#ef4444" stroke-width="1"/>
-      <text x="210" y="130" text-anchor="middle" fill="#ef4444" font-size="10" font-weight="600">compliance-report-generator</text>
+      <rect x="80" y="72" width="260" height="80" rx="12" fill="#fffdf8" stroke="#3a7d44" stroke-width="1.5"/>
+      <text x="210" y="96" text-anchor="middle" fill="#3a7d44" font-size="13" font-weight="700">compliance-ops</text>
+      <rect x="100" y="110" width="220" height="30" rx="6" fill="rgba(239,68,68,0.08)" stroke="#b33a3a" stroke-width="1"/>
+      <text x="210" y="130" text-anchor="middle" fill="#b33a3a" font-size="10" font-weight="600">compliance-report-generator</text>
 
       <!-- finance-payments namespace -->
-      <rect x="400" y="72" width="260" height="80" rx="12" fill="#111827" stroke="#10b981" stroke-width="1.5"/>
-      <text x="530" y="96" text-anchor="middle" fill="#10b981" font-size="13" font-weight="700">finance-payments</text>
-      <rect x="420" y="110" width="220" height="30" rx="6" fill="#111827" stroke="#374151" stroke-width="1"/>
-      <text x="530" y="130" text-anchor="middle" fill="#e5e7eb" font-size="10">payment-service</text>
+      <rect x="400" y="72" width="260" height="80" rx="12" fill="#fffdf8" stroke="#3a7d44" stroke-width="1.5"/>
+      <text x="530" y="96" text-anchor="middle" fill="#3a7d44" font-size="13" font-weight="700">finance-payments</text>
+      <rect x="420" y="110" width="220" height="30" rx="6" fill="#fffdf8" stroke="#c9bfae" stroke-width="1"/>
+      <text x="530" y="130" text-anchor="middle" fill="#2c2416" font-size="10">payment-service</text>
 
       <!-- risk-management namespace -->
-      <rect x="720" y="72" width="260" height="80" rx="12" fill="#111827" stroke="#10b981" stroke-width="1.5"/>
-      <text x="850" y="96" text-anchor="middle" fill="#10b981" font-size="13" font-weight="700">risk-management</text>
-      <rect x="740" y="110" width="220" height="30" rx="6" fill="#111827" stroke="#374151" stroke-width="1"/>
-      <text x="850" y="130" text-anchor="middle" fill="#e5e7eb" font-size="10">risk-api</text>
+      <rect x="720" y="72" width="260" height="80" rx="12" fill="#fffdf8" stroke="#3a7d44" stroke-width="1.5"/>
+      <text x="850" y="96" text-anchor="middle" fill="#3a7d44" font-size="13" font-weight="700">risk-management</text>
+      <rect x="740" y="110" width="220" height="30" rx="6" fill="#fffdf8" stroke="#c9bfae" stroke-width="1"/>
+      <text x="850" y="130" text-anchor="middle" fill="#2c2416" font-size="10">risk-api</text>
 
       <!-- ======== CRASH EVENT ======== -->
       <!-- Animated crash icon -->
-      <circle cx="210" cy="130" r="0" fill="none" stroke="#ef4444" stroke-width="1.5" opacity="0">
+      <circle cx="210" cy="130" r="0" fill="none" stroke="#b33a3a" stroke-width="1.5" opacity="0">
         <animate attributeName="r" values="0;30;30" dur="3s" repeatCount="indefinite"/>
         <animate attributeName="opacity" values="0;0.6;0" dur="3s" repeatCount="indefinite"/>
       </circle>
 
       <!-- Event emanating -->
-      <text x="210" y="174" text-anchor="middle" fill="#ef4444" font-size="10" font-weight="600">CrashLoopBackOff</text>
+      <text x="210" y="174" text-anchor="middle" fill="#b33a3a" font-size="10" font-weight="600">CrashLoopBackOff</text>
 
       <!-- Arrow: Event -> khook -->
-      <path d="M 210 180 L 210 210 Q 210 220 220 220 L 395 220" stroke="#ef4444" stroke-width="2" fill="none" marker-end="url(#arr-red)"/>
-      <text x="310" y="215" text-anchor="middle" fill="#ef4444" font-size="9">K8s Event API</text>
+      <path d="M 210 180 L 210 210 Q 210 220 220 220 L 395 220" stroke="#b33a3a" stroke-width="2" fill="none" marker-end="url(#arr-red)"/>
+      <text x="310" y="215" text-anchor="middle" fill="#b33a3a" font-size="9">K8s Event API</text>
 
       <!-- ======== ROW 2: KHOOK ======== -->
-      <text x="530" y="225" text-anchor="middle" fill="#9ca3af" font-size="11" font-weight="600" letter-spacing="0.08em">EVENT WATCHER</text>
+      <text x="530" y="225" text-anchor="middle" fill="#7a6f5f" font-size="11" font-weight="600" letter-spacing="0.08em">EVENT WATCHER</text>
 
       <!-- khook box -->
-      <rect x="405" y="236" width="250" height="80" rx="12" fill="#0a1520" stroke="#06b6d4" stroke-width="2"/>
-      <text x="530" y="262" text-anchor="middle" fill="#06b6d4" font-size="15" font-weight="700">khook</text>
-      <text x="530" y="280" text-anchor="middle" fill="#9ca3af" font-size="10">Watches namespaces for pod-restart, oom-kill</text>
-      <text x="530" y="294" text-anchor="middle" fill="#9ca3af" font-size="10">Matches events against hook rules</text>
+      <rect x="405" y="236" width="250" height="80" rx="12" fill="#fffdf8" stroke="#2d7d8e" stroke-width="2"/>
+      <text x="530" y="262" text-anchor="middle" fill="#2d7d8e" font-size="15" font-weight="700">khook</text>
+      <text x="530" y="280" text-anchor="middle" fill="#7a6f5f" font-size="10">Watches namespaces for pod-restart, oom-kill</text>
+      <text x="530" y="294" text-anchor="middle" fill="#7a6f5f" font-size="10">Matches events against hook rules</text>
 
       <!-- Hook config callout -->
-      <rect x="700" y="242" width="260" height="68" rx="8" fill="#111827" stroke="#374151" stroke-width="1"/>
-      <text x="830" y="260" text-anchor="middle" fill="#e5e7eb" font-size="11" font-weight="600">Hook Configuration</text>
-      <text x="830" y="278" text-anchor="middle" fill="#9ca3af" font-size="9">events: [pod-restart, oom-kill]</text>
-      <text x="830" y="292" text-anchor="middle" fill="#9ca3af" font-size="9">agent: compliance-incident-agent</text>
-      <line x1="655" y1="276" x2="700" y2="276" stroke="#374151" stroke-width="1" stroke-dasharray="4,2"/>
+      <rect x="700" y="242" width="260" height="68" rx="8" fill="#fffdf8" stroke="#c9bfae" stroke-width="1"/>
+      <text x="830" y="260" text-anchor="middle" fill="#2c2416" font-size="11" font-weight="600">Hook Configuration</text>
+      <text x="830" y="278" text-anchor="middle" fill="#7a6f5f" font-size="9">events: [pod-restart, oom-kill]</text>
+      <text x="830" y="292" text-anchor="middle" fill="#7a6f5f" font-size="9">agent: compliance-incident-agent</text>
+      <line x1="655" y1="276" x2="700" y2="276" stroke="#c9bfae" stroke-width="1" stroke-dasharray="4,2"/>
 
       <!-- Step 1 badge -->
-      <circle cx="408" cy="240" r="12" fill="#06b6d4" opacity="0.2"/>
-      <text x="408" y="244" text-anchor="middle" fill="#06b6d4" font-size="11" font-weight="700">1</text>
+      <circle cx="408" cy="240" r="12" fill="#2d7d8e" opacity="0.2"/>
+      <text x="408" y="244" text-anchor="middle" fill="#2d7d8e" font-size="11" font-weight="700">1</text>
 
       <!-- ======== ARROW: khook -> proxy ======== -->
-      <line x1="530" y1="316" x2="530" y2="366" stroke="#06b6d4" stroke-width="2" marker-end="url(#arr-cyan)"/>
-      <text x="548" y="344" fill="#06b6d4" font-size="10" font-weight="500">POST /api/sessions</text>
+      <line x1="530" y1="316" x2="530" y2="366" stroke="#2d7d8e" stroke-width="2" marker-end="url(#arr-cyan)"/>
+      <text x="548" y="344" fill="#2d7d8e" font-size="10" font-weight="500">POST /api/sessions</text>
 
       <!-- ======== ROW 3: AUTH PROXY (the star) ======== -->
-      <text x="530" y="370" text-anchor="middle" fill="#9ca3af" font-size="11" font-weight="600" letter-spacing="0.08em">AUTH INJECTION LAYER</text>
+      <text x="530" y="370" text-anchor="middle" fill="#7a6f5f" font-size="11" font-weight="600" letter-spacing="0.08em">AUTH INJECTION LAYER</text>
 
       <!-- Proxy box with glow -->
-      <rect x="340" y="384" width="380" height="110" rx="14" fill="#1a1205" stroke="#f97316" stroke-width="2.5"/>
+      <rect x="340" y="384" width="380" height="110" rx="14" fill="#fffdf8" stroke="#c4652f" stroke-width="2.5"/>
 
       <!-- Proxy title -->
-      <text x="530" y="410" text-anchor="middle" fill="#f97316" font-size="16" font-weight="700">khook-auth-proxy</text>
-      <text x="530" y="428" text-anchor="middle" fill="#9ca3af" font-size="10">python:3.12-slim &middot; Port 8083 &middot; kagent namespace</text>
+      <text x="530" y="410" text-anchor="middle" fill="#c4652f" font-size="16" font-weight="700">khook-auth-proxy</text>
+      <text x="530" y="428" text-anchor="middle" fill="#7a6f5f" font-size="10">python:3.12-slim &middot; Port 8083 &middot; kagent namespace</text>
 
       <!-- Header injection visualization -->
-      <rect x="362" y="440" width="168" height="40" rx="6" fill="rgba(249,115,22,0.1)" stroke="#f97316" stroke-width="1"/>
-      <text x="446" y="456" text-anchor="middle" fill="#f97316" font-size="9" font-weight="600">Authorization:</text>
-      <text x="446" y="470" text-anchor="middle" fill="#f59e0b" font-size="9">Bearer &lt;sa-token&gt;</text>
+      <rect x="362" y="440" width="168" height="40" rx="6" fill="rgba(249,115,22,0.1)" stroke="#c4652f" stroke-width="1"/>
+      <text x="446" y="456" text-anchor="middle" fill="#c4652f" font-size="9" font-weight="600">Authorization:</text>
+      <text x="446" y="470" text-anchor="middle" fill="#c4882f" font-size="9">Bearer &lt;sa-token&gt;</text>
 
-      <rect x="542" y="440" width="160" height="40" rx="6" fill="rgba(249,115,22,0.1)" stroke="#f97316" stroke-width="1"/>
-      <text x="622" y="456" text-anchor="middle" fill="#f97316" font-size="9" font-weight="600">X-User-Id:</text>
-      <text x="622" y="470" text-anchor="middle" fill="#f59e0b" font-size="9">admin</text>
+      <rect x="542" y="440" width="160" height="40" rx="6" fill="rgba(249,115,22,0.1)" stroke="#c4652f" stroke-width="1"/>
+      <text x="622" y="456" text-anchor="middle" fill="#c4652f" font-size="9" font-weight="600">X-User-Id:</text>
+      <text x="622" y="470" text-anchor="middle" fill="#c4882f" font-size="9">admin</text>
 
       <!-- Step 2 badge -->
-      <circle cx="343" cy="388" r="12" fill="#f97316" opacity="0.2"/>
-      <text x="343" y="392" text-anchor="middle" fill="#f97316" font-size="11" font-weight="700">2</text>
+      <circle cx="343" cy="388" r="12" fill="#c4652f" opacity="0.2"/>
+      <text x="343" y="392" text-anchor="middle" fill="#c4652f" font-size="11" font-weight="700">2</text>
 
       <!-- SA token source arrow -->
-      <rect x="80" y="408" width="220" height="62" rx="10" fill="#111827" stroke="#f59e0b" stroke-width="1.5"/>
-      <text x="190" y="430" text-anchor="middle" fill="#f59e0b" font-size="11" font-weight="600">ServiceAccount Token</text>
-      <text x="190" y="448" text-anchor="middle" fill="#9ca3af" font-size="9">/var/run/secrets/kubernetes.io/</text>
-      <text x="190" y="460" text-anchor="middle" fill="#9ca3af" font-size="9">serviceaccount/token</text>
-      <line x1="300" y1="439" x2="340" y2="439" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#arr-yellow)"/>
-      <text x="320" y="434" text-anchor="middle" fill="#f59e0b" font-size="8">read</text>
+      <rect x="80" y="408" width="220" height="62" rx="10" fill="#fffdf8" stroke="#c4882f" stroke-width="1.5"/>
+      <text x="190" y="430" text-anchor="middle" fill="#c4882f" font-size="11" font-weight="600">ServiceAccount Token</text>
+      <text x="190" y="448" text-anchor="middle" fill="#7a6f5f" font-size="9">/var/run/secrets/kubernetes.io/</text>
+      <text x="190" y="460" text-anchor="middle" fill="#7a6f5f" font-size="9">serviceaccount/token</text>
+      <line x1="300" y1="439" x2="340" y2="439" stroke="#c4882f" stroke-width="1.5" marker-end="url(#arr-yellow)"/>
+      <text x="320" y="434" text-anchor="middle" fill="#c4882f" font-size="8">read</text>
 
       <!-- Token cache note -->
-      <rect x="80" y="478" width="220" height="28" rx="6" fill="rgba(245,158,11,0.06)" stroke="#f59e0b" stroke-width="1" stroke-dasharray="4,2"/>
-      <text x="190" y="496" text-anchor="middle" fill="#f59e0b" font-size="9">Cached in memory, re-read on mtime change</text>
+      <rect x="80" y="478" width="220" height="28" rx="6" fill="rgba(245,158,11,0.06)" stroke="#c4882f" stroke-width="1" stroke-dasharray="4,2"/>
+      <text x="190" y="496" text-anchor="middle" fill="#c4882f" font-size="9">Cached in memory, re-read on mtime change</text>
 
       <!-- Health check -->
-      <rect x="762" y="414" width="200" height="50" rx="8" fill="#111827" stroke="#374151" stroke-width="1"/>
-      <text x="862" y="436" text-anchor="middle" fill="#e5e7eb" font-size="10" font-weight="600">Health Server :8084</text>
-      <text x="862" y="452" text-anchor="middle" fill="#10b981" font-size="9">GET /healthz &rarr; 200 ok</text>
-      <line x1="720" y1="439" x2="762" y2="439" stroke="#374151" stroke-width="1" stroke-dasharray="4,2"/>
+      <rect x="762" y="414" width="200" height="50" rx="8" fill="#fffdf8" stroke="#c9bfae" stroke-width="1"/>
+      <text x="862" y="436" text-anchor="middle" fill="#2c2416" font-size="10" font-weight="600">Health Server :8084</text>
+      <text x="862" y="452" text-anchor="middle" fill="#3a7d44" font-size="9">GET /healthz &rarr; 200 ok</text>
+      <line x1="720" y1="439" x2="762" y2="439" stroke="#c9bfae" stroke-width="1" stroke-dasharray="4,2"/>
 
       <!-- ======== ARROW: proxy -> controller ======== -->
-      <line x1="530" y1="494" x2="530" y2="556" stroke="#f97316" stroke-width="2" marker-end="url(#arr-orange)"/>
-      <text x="548" y="528" fill="#f97316" font-size="10" font-weight="500">Forwarded request</text>
-      <text x="548" y="542" fill="#9ca3af" font-size="9">+ injected headers</text>
+      <line x1="530" y1="494" x2="530" y2="556" stroke="#c4652f" stroke-width="2" marker-end="url(#arr-orange)"/>
+      <text x="548" y="528" fill="#c4652f" font-size="10" font-weight="500">Forwarded request</text>
+      <text x="548" y="542" fill="#7a6f5f" font-size="9">+ injected headers</text>
 
       <!-- ======== ROW 4: KAGENT CONTROLLER ======== -->
-      <text x="530" y="560" text-anchor="middle" fill="#9ca3af" font-size="11" font-weight="600" letter-spacing="0.08em">KAGENT ENTERPRISE CONTROLLER</text>
+      <text x="530" y="560" text-anchor="middle" fill="#7a6f5f" font-size="11" font-weight="600" letter-spacing="0.08em">KAGENT ENTERPRISE CONTROLLER</text>
 
-      <rect x="340" y="572" width="380" height="90" rx="12" fill="#111827" stroke="#6366f1" stroke-width="2"/>
-      <text x="530" y="598" text-anchor="middle" fill="#818cf8" font-size="15" font-weight="700">kagent-controller</text>
-      <text x="530" y="616" text-anchor="middle" fill="#9ca3af" font-size="10">Port 8083 &middot; Enterprise auth middleware</text>
+      <rect x="340" y="572" width="380" height="90" rx="12" fill="#fffdf8" stroke="#2d5a8e" stroke-width="2"/>
+      <text x="530" y="598" text-anchor="middle" fill="#3a72b0" font-size="15" font-weight="700">kagent-controller</text>
+      <text x="530" y="616" text-anchor="middle" fill="#7a6f5f" font-size="10">Port 8083 &middot; Enterprise auth middleware</text>
 
       <!-- Auth validation steps -->
-      <rect x="362" y="628" width="146" height="24" rx="4" fill="rgba(99,102,241,0.1)" stroke="#6366f1" stroke-width="1"/>
-      <text x="435" y="644" text-anchor="middle" fill="#818cf8" font-size="9">Validate SA token (JWKS)</text>
+      <rect x="362" y="628" width="146" height="24" rx="4" fill="rgba(99,102,241,0.1)" stroke="#2d5a8e" stroke-width="1"/>
+      <text x="435" y="644" text-anchor="middle" fill="#3a72b0" font-size="9">Validate SA token (JWKS)</text>
 
-      <rect x="520" y="628" width="180" height="24" rx="4" fill="rgba(99,102,241,0.1)" stroke="#6366f1" stroke-width="1"/>
-      <text x="610" y="644" text-anchor="middle" fill="#818cf8" font-size="9">Accept X-User-Id &rarr; session</text>
+      <rect x="520" y="628" width="180" height="24" rx="4" fill="rgba(99,102,241,0.1)" stroke="#2d5a8e" stroke-width="1"/>
+      <text x="610" y="644" text-anchor="middle" fill="#3a72b0" font-size="9">Accept X-User-Id &rarr; session</text>
 
       <!-- Step 3 badge -->
-      <circle cx="343" cy="576" r="12" fill="#818cf8" opacity="0.2"/>
-      <text x="343" y="580" text-anchor="middle" fill="#818cf8" font-size="11" font-weight="700">3</text>
+      <circle cx="343" cy="576" r="12" fill="#3a72b0" opacity="0.2"/>
+      <text x="343" y="580" text-anchor="middle" fill="#3a72b0" font-size="11" font-weight="700">3</text>
 
       <!-- OIDC IDP (crossed out) -->
-      <rect x="780" y="580" width="200" height="52" rx="8" fill="#111827" stroke="#ef4444" stroke-width="1" stroke-dasharray="6,3" opacity="0.5"/>
-      <text x="880" y="602" text-anchor="middle" fill="#ef4444" font-size="10" font-weight="600" opacity="0.5">Auto IDP (OIDC)</text>
-      <text x="880" y="618" text-anchor="middle" fill="#9ca3af" font-size="9" opacity="0.5">Browser-only &middot; Bypassed</text>
+      <rect x="780" y="580" width="200" height="52" rx="8" fill="#fffdf8" stroke="#b33a3a" stroke-width="1" stroke-dasharray="6,3" opacity="0.5"/>
+      <text x="880" y="602" text-anchor="middle" fill="#b33a3a" font-size="10" font-weight="600" opacity="0.5">Auto IDP (OIDC)</text>
+      <text x="880" y="618" text-anchor="middle" fill="#7a6f5f" font-size="9" opacity="0.5">Browser-only &middot; Bypassed</text>
       <!-- Strike-through line -->
-      <line x1="790" y1="606" x2="970" y2="606" stroke="#ef4444" stroke-width="1.5" opacity="0.5"/>
+      <line x1="790" y1="606" x2="970" y2="606" stroke="#b33a3a" stroke-width="1.5" opacity="0.5"/>
 
       <!-- 201 Created response -->
-      <rect x="430" y="670" width="200" height="28" rx="6" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1.5"/>
-      <text x="530" y="688" text-anchor="middle" fill="#10b981" font-size="11" font-weight="700">HTTP 201 Created</text>
+      <rect x="430" y="670" width="200" height="28" rx="6" fill="rgba(16,185,129,0.1)" stroke="#3a7d44" stroke-width="1.5"/>
+      <text x="530" y="688" text-anchor="middle" fill="#3a7d44" font-size="11" font-weight="700">HTTP 201 Created</text>
 
       <!-- ======== ARROW: controller -> agent ======== -->
-      <line x1="530" y1="698" x2="530" y2="748" stroke="#818cf8" stroke-width="2" marker-end="url(#arr-accent)"/>
-      <text x="548" y="726" fill="#818cf8" font-size="10" font-weight="500">A2A SendMessage</text>
+      <line x1="530" y1="698" x2="530" y2="748" stroke="#3a72b0" stroke-width="2" marker-end="url(#arr-accent)"/>
+      <text x="548" y="726" fill="#3a72b0" font-size="10" font-weight="500">A2A SendMessage</text>
 
       <!-- ======== ROW 5: TARGET AGENT ======== -->
-      <text x="530" y="752" text-anchor="middle" fill="#9ca3af" font-size="11" font-weight="600" letter-spacing="0.08em">AI AGENT EXECUTION</text>
+      <text x="530" y="752" text-anchor="middle" fill="#7a6f5f" font-size="11" font-weight="600" letter-spacing="0.08em">AI AGENT EXECUTION</text>
 
-      <rect x="340" y="764" width="380" height="75" rx="12" fill="#0a1a15" stroke="#10b981" stroke-width="2"/>
-      <text x="530" y="790" text-anchor="middle" fill="#10b981" font-size="15" font-weight="700">compliance-incident-agent</text>
-      <text x="530" y="808" text-anchor="middle" fill="#9ca3af" font-size="10">Diagnoses issue &middot; Queries K8s &amp; Prometheus</text>
-      <text x="530" y="822" text-anchor="middle" fill="#9ca3af" font-size="10">Creates GitHub issue &middot; Notifies Slack</text>
+      <rect x="340" y="764" width="380" height="75" rx="12" fill="#fffdf8" stroke="#3a7d44" stroke-width="2"/>
+      <text x="530" y="790" text-anchor="middle" fill="#3a7d44" font-size="15" font-weight="700">compliance-incident-agent</text>
+      <text x="530" y="808" text-anchor="middle" fill="#7a6f5f" font-size="10">Diagnoses issue &middot; Queries K8s &amp; Prometheus</text>
+      <text x="530" y="822" text-anchor="middle" fill="#7a6f5f" font-size="10">Creates GitHub issue &middot; Notifies Slack</text>
 
       <!-- Step 4 badge -->
-      <circle cx="343" cy="768" r="12" fill="#10b981" opacity="0.2"/>
-      <text x="343" y="772" text-anchor="middle" fill="#10b981" font-size="11" font-weight="700">4</text>
+      <circle cx="343" cy="768" r="12" fill="#3a7d44" opacity="0.2"/>
+      <text x="343" y="772" text-anchor="middle" fill="#3a7d44" font-size="11" font-weight="700">4</text>
 
       <!-- Agent outputs -->
-      <rect x="80" y="774" width="220" height="55" rx="8" fill="#111827" stroke="#374151" stroke-width="1"/>
-      <text x="190" y="796" text-anchor="middle" fill="#e5e7eb" font-size="10" font-weight="600">Agent Actions</text>
-      <text x="190" y="814" text-anchor="middle" fill="#9ca3af" font-size="9">kubectl describe, get logs, query metrics</text>
+      <rect x="80" y="774" width="220" height="55" rx="8" fill="#fffdf8" stroke="#c9bfae" stroke-width="1"/>
+      <text x="190" y="796" text-anchor="middle" fill="#2c2416" font-size="10" font-weight="600">Agent Actions</text>
+      <text x="190" y="814" text-anchor="middle" fill="#7a6f5f" font-size="9">kubectl describe, get logs, query metrics</text>
 
-      <rect x="760" y="774" width="220" height="55" rx="8" fill="#111827" stroke="#374151" stroke-width="1"/>
-      <text x="870" y="796" text-anchor="middle" fill="#e5e7eb" font-size="10" font-weight="600">Outputs</text>
-      <text x="870" y="814" text-anchor="middle" fill="#9ca3af" font-size="9">GitHub Issue + Slack notification</text>
+      <rect x="760" y="774" width="220" height="55" rx="8" fill="#fffdf8" stroke="#c9bfae" stroke-width="1"/>
+      <text x="870" y="796" text-anchor="middle" fill="#2c2416" font-size="10" font-weight="600">Outputs</text>
+      <text x="870" y="814" text-anchor="middle" fill="#7a6f5f" font-size="9">GitHub Issue + Slack notification</text>
 
-      <line x1="340" y1="800" x2="300" y2="800" stroke="#374151" stroke-width="1" stroke-dasharray="4,2"/>
-      <line x1="720" y1="800" x2="760" y2="800" stroke="#374151" stroke-width="1" stroke-dasharray="4,2"/>
+      <line x1="340" y1="800" x2="300" y2="800" stroke="#c9bfae" stroke-width="1" stroke-dasharray="4,2"/>
+      <line x1="720" y1="800" x2="760" y2="800" stroke="#c9bfae" stroke-width="1" stroke-dasharray="4,2"/>
 
       <!-- ======== TIMING ANNOTATIONS ======== -->
       <!-- Vertical timeline on the right -->
-      <line x1="1010" y1="130" x2="1010" y2="800" stroke="#374151" stroke-width="1" stroke-dasharray="4,2" opacity="0.5"/>
-      <circle cx="1010" cy="130" r="3" fill="#ef4444"/>
-      <text x="1030" y="134" fill="#ef4444" font-size="8" opacity="0.7">t=0</text>
-      <circle cx="1010" cy="276" r="3" fill="#06b6d4"/>
-      <text x="1030" y="280" fill="#06b6d4" font-size="8" opacity="0.7">t+ms</text>
-      <circle cx="1010" cy="439" r="3" fill="#f97316"/>
-      <text x="1030" y="443" fill="#f97316" font-size="8" opacity="0.7">t+ms</text>
-      <circle cx="1010" cy="617" r="3" fill="#818cf8"/>
-      <text x="1030" y="621" fill="#818cf8" font-size="8" opacity="0.7">t+ms</text>
-      <circle cx="1010" cy="800" r="3" fill="#10b981"/>
-      <text x="1030" y="804" fill="#10b981" font-size="8" opacity="0.7">t+sec</text>
+      <line x1="1010" y1="130" x2="1010" y2="800" stroke="#c9bfae" stroke-width="1" stroke-dasharray="4,2" opacity="0.5"/>
+      <circle cx="1010" cy="130" r="3" fill="#b33a3a"/>
+      <text x="1030" y="134" fill="#b33a3a" font-size="8" opacity="0.7">t=0</text>
+      <circle cx="1010" cy="276" r="3" fill="#2d7d8e"/>
+      <text x="1030" y="280" fill="#2d7d8e" font-size="8" opacity="0.7">t+ms</text>
+      <circle cx="1010" cy="439" r="3" fill="#c4652f"/>
+      <text x="1030" y="443" fill="#c4652f" font-size="8" opacity="0.7">t+ms</text>
+      <circle cx="1010" cy="617" r="3" fill="#3a72b0"/>
+      <text x="1030" y="621" fill="#3a72b0" font-size="8" opacity="0.7">t+ms</text>
+      <circle cx="1010" cy="800" r="3" fill="#3a7d44"/>
+      <text x="1030" y="804" fill="#3a7d44" font-size="8" opacity="0.7">t+sec</text>
     </svg>
   </div>
 
@@ -407,121 +279,121 @@
     <svg viewBox="0 0 920 700" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <marker id="seq-arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-          <path d="M0,0 L8,3 L0,6" fill="#6b7280"/>
+          <path d="M0,0 L8,3 L0,6" fill="#a89e8e"/>
         </marker>
         <marker id="seq-arr-ret" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-          <path d="M0,0 L8,3 L0,6" fill="#10b981"/>
+          <path d="M0,0 L8,3 L0,6" fill="#3a7d44"/>
         </marker>
       </defs>
 
       <!-- Participants -->
-      <rect x="30" y="20" width="130" height="44" rx="8" fill="#111827" stroke="#ef4444" stroke-width="1.5"/>
-      <text x="95" y="40" text-anchor="middle" fill="#ef4444" font-size="11" font-weight="700">K8s Event</text>
-      <text x="95" y="54" text-anchor="middle" fill="#9ca3af" font-size="9">cluster</text>
+      <rect x="30" y="20" width="130" height="44" rx="8" fill="#fffdf8" stroke="#b33a3a" stroke-width="1.5"/>
+      <text x="95" y="40" text-anchor="middle" fill="#b33a3a" font-size="11" font-weight="700">K8s Event</text>
+      <text x="95" y="54" text-anchor="middle" fill="#7a6f5f" font-size="9">cluster</text>
 
-      <rect x="220" y="20" width="130" height="44" rx="8" fill="#0a1520" stroke="#06b6d4" stroke-width="1.5"/>
-      <text x="285" y="40" text-anchor="middle" fill="#06b6d4" font-size="11" font-weight="700">khook</text>
-      <text x="285" y="54" text-anchor="middle" fill="#9ca3af" font-size="9">event watcher</text>
+      <rect x="220" y="20" width="130" height="44" rx="8" fill="#fffdf8" stroke="#2d7d8e" stroke-width="1.5"/>
+      <text x="285" y="40" text-anchor="middle" fill="#2d7d8e" font-size="11" font-weight="700">khook</text>
+      <text x="285" y="54" text-anchor="middle" fill="#7a6f5f" font-size="9">event watcher</text>
 
-      <rect x="400" y="20" width="130" height="44" rx="8" fill="#1a1205" stroke="#f97316" stroke-width="1.5"/>
-      <text x="465" y="40" text-anchor="middle" fill="#f97316" font-size="11" font-weight="700">auth-proxy</text>
-      <text x="465" y="54" text-anchor="middle" fill="#9ca3af" font-size="9">:8083</text>
+      <rect x="400" y="20" width="130" height="44" rx="8" fill="#fffdf8" stroke="#c4652f" stroke-width="1.5"/>
+      <text x="465" y="40" text-anchor="middle" fill="#c4652f" font-size="11" font-weight="700">auth-proxy</text>
+      <text x="465" y="54" text-anchor="middle" fill="#7a6f5f" font-size="9">:8083</text>
 
-      <rect x="580" y="20" width="150" height="44" rx="8" fill="#111827" stroke="#6366f1" stroke-width="1.5"/>
-      <text x="655" y="40" text-anchor="middle" fill="#818cf8" font-size="11" font-weight="700">kagent-controller</text>
-      <text x="655" y="54" text-anchor="middle" fill="#9ca3af" font-size="9">enterprise :8083</text>
+      <rect x="580" y="20" width="150" height="44" rx="8" fill="#fffdf8" stroke="#2d5a8e" stroke-width="1.5"/>
+      <text x="655" y="40" text-anchor="middle" fill="#3a72b0" font-size="11" font-weight="700">kagent-controller</text>
+      <text x="655" y="54" text-anchor="middle" fill="#7a6f5f" font-size="9">enterprise :8083</text>
 
-      <rect x="780" y="20" width="120" height="44" rx="8" fill="#0a1a15" stroke="#10b981" stroke-width="1.5"/>
-      <text x="840" y="40" text-anchor="middle" fill="#10b981" font-size="11" font-weight="700">Agent</text>
-      <text x="840" y="54" text-anchor="middle" fill="#9ca3af" font-size="9">compliance</text>
+      <rect x="780" y="20" width="120" height="44" rx="8" fill="#fffdf8" stroke="#3a7d44" stroke-width="1.5"/>
+      <text x="840" y="40" text-anchor="middle" fill="#3a7d44" font-size="11" font-weight="700">Agent</text>
+      <text x="840" y="54" text-anchor="middle" fill="#7a6f5f" font-size="9">compliance</text>
 
       <!-- Lifelines -->
-      <line x1="95" y1="64" x2="95" y2="680" stroke="#374151" stroke-width="1" stroke-dasharray="4,3"/>
-      <line x1="285" y1="64" x2="285" y2="680" stroke="#374151" stroke-width="1" stroke-dasharray="4,3"/>
-      <line x1="465" y1="64" x2="465" y2="680" stroke="#374151" stroke-width="1" stroke-dasharray="4,3"/>
-      <line x1="655" y1="64" x2="655" y2="680" stroke="#374151" stroke-width="1" stroke-dasharray="4,3"/>
-      <line x1="840" y1="64" x2="840" y2="680" stroke="#374151" stroke-width="1" stroke-dasharray="4,3"/>
+      <line x1="95" y1="64" x2="95" y2="680" stroke="#c9bfae" stroke-width="1" stroke-dasharray="4,3"/>
+      <line x1="285" y1="64" x2="285" y2="680" stroke="#c9bfae" stroke-width="1" stroke-dasharray="4,3"/>
+      <line x1="465" y1="64" x2="465" y2="680" stroke="#c9bfae" stroke-width="1" stroke-dasharray="4,3"/>
+      <line x1="655" y1="64" x2="655" y2="680" stroke="#c9bfae" stroke-width="1" stroke-dasharray="4,3"/>
+      <line x1="840" y1="64" x2="840" y2="680" stroke="#c9bfae" stroke-width="1" stroke-dasharray="4,3"/>
 
       <!-- 1. CrashLoopBackOff event -->
-      <line x1="95" y1="100" x2="275" y2="100" stroke="#ef4444" stroke-width="1.5" marker-end="url(#seq-arr)"/>
-      <text x="185" y="94" text-anchor="middle" fill="#ef4444" font-size="10" font-weight="500">CrashLoopBackOff event</text>
+      <line x1="95" y1="100" x2="275" y2="100" stroke="#b33a3a" stroke-width="1.5" marker-end="url(#seq-arr)"/>
+      <text x="185" y="94" text-anchor="middle" fill="#b33a3a" font-size="10" font-weight="500">CrashLoopBackOff event</text>
 
       <!-- Activation box on khook -->
-      <rect x="278" y="100" width="14" height="60" rx="2" fill="#06b6d4" opacity="0.2" stroke="#06b6d4" stroke-width="1"/>
+      <rect x="278" y="100" width="14" height="60" rx="2" fill="#2d7d8e" opacity="0.2" stroke="#2d7d8e" stroke-width="1"/>
 
       <!-- Note: khook matches hook -->
-      <rect x="310" y="108" width="140" height="44" rx="6" fill="#111827" stroke="#374151" stroke-width="1"/>
-      <text x="380" y="126" text-anchor="middle" fill="#e5e7eb" font-size="9" font-weight="500">Match hook rule:</text>
-      <text x="380" y="140" text-anchor="middle" fill="#9ca3af" font-size="9">event=pod-restart</text>
-      <text x="380" y="152" text-anchor="middle" fill="#06b6d4" font-size="8">dedup check &rarr; new event</text>
+      <rect x="310" y="108" width="140" height="44" rx="6" fill="#fffdf8" stroke="#c9bfae" stroke-width="1"/>
+      <text x="380" y="126" text-anchor="middle" fill="#2c2416" font-size="9" font-weight="500">Match hook rule:</text>
+      <text x="380" y="140" text-anchor="middle" fill="#7a6f5f" font-size="9">event=pod-restart</text>
+      <text x="380" y="152" text-anchor="middle" fill="#2d7d8e" font-size="8">dedup check &rarr; new event</text>
 
       <!-- 2. khook -> proxy: POST /api/sessions -->
-      <line x1="285" y1="180" x2="455" y2="180" stroke="#06b6d4" stroke-width="1.5" marker-end="url(#seq-arr)"/>
-      <text x="370" y="174" text-anchor="middle" fill="#06b6d4" font-size="10" font-weight="500">POST /api/sessions?user_id=admin</text>
+      <line x1="285" y1="180" x2="455" y2="180" stroke="#2d7d8e" stroke-width="1.5" marker-end="url(#seq-arr)"/>
+      <text x="370" y="174" text-anchor="middle" fill="#2d7d8e" font-size="10" font-weight="500">POST /api/sessions?user_id=admin</text>
 
       <!-- Activation box on proxy -->
-      <rect x="458" y="180" width="14" height="120" rx="2" fill="#f97316" opacity="0.2" stroke="#f97316" stroke-width="1"/>
+      <rect x="458" y="180" width="14" height="120" rx="2" fill="#c4652f" opacity="0.2" stroke="#c4652f" stroke-width="1"/>
 
       <!-- Note: proxy header injection -->
-      <rect x="184" y="198" width="270" height="90" rx="8" fill="#1a1205" stroke="#f97316" stroke-width="1.5"/>
-      <text x="319" y="218" text-anchor="middle" fill="#f97316" font-size="10" font-weight="700">Header Injection</text>
+      <rect x="184" y="198" width="270" height="90" rx="8" fill="#fffdf8" stroke="#c4652f" stroke-width="1.5"/>
+      <text x="319" y="218" text-anchor="middle" fill="#c4652f" font-size="10" font-weight="700">Header Injection</text>
 
-      <text x="206" y="238" fill="#9ca3af" font-size="9">1. Read SA token from file (cached)</text>
-      <text x="206" y="254" fill="#9ca3af" font-size="9">2. Strip: Authorization, X-User-Id, Host</text>
-      <text x="206" y="270" fill="#f59e0b" font-size="9" font-weight="500">3. Add: Authorization: Bearer &lt;sa-token&gt;</text>
-      <text x="206" y="286" fill="#f59e0b" font-size="9" font-weight="500">4. Add: X-User-Id: admin</text>
+      <text x="206" y="238" fill="#7a6f5f" font-size="9">1. Read SA token from file (cached)</text>
+      <text x="206" y="254" fill="#7a6f5f" font-size="9">2. Strip: Authorization, X-User-Id, Host</text>
+      <text x="206" y="270" fill="#c4882f" font-size="9" font-weight="500">3. Add: Authorization: Bearer &lt;sa-token&gt;</text>
+      <text x="206" y="286" fill="#c4882f" font-size="9" font-weight="500">4. Add: X-User-Id: admin</text>
 
       <!-- 3. proxy -> controller: forwarded request -->
-      <line x1="465" y1="310" x2="645" y2="310" stroke="#f97316" stroke-width="1.5" marker-end="url(#seq-arr)"/>
-      <text x="555" y="304" text-anchor="middle" fill="#f97316" font-size="10" font-weight="500">POST /api/sessions (authenticated)</text>
+      <line x1="465" y1="310" x2="645" y2="310" stroke="#c4652f" stroke-width="1.5" marker-end="url(#seq-arr)"/>
+      <text x="555" y="304" text-anchor="middle" fill="#c4652f" font-size="10" font-weight="500">POST /api/sessions (authenticated)</text>
 
       <!-- Activation box on controller -->
-      <rect x="648" y="310" width="14" height="100" rx="2" fill="#818cf8" opacity="0.2" stroke="#6366f1" stroke-width="1"/>
+      <rect x="648" y="310" width="14" height="100" rx="2" fill="#3a72b0" opacity="0.2" stroke="#2d5a8e" stroke-width="1"/>
 
       <!-- Note: controller validation -->
-      <rect x="680" y="322" width="220" height="70" rx="6" fill="#111827" stroke="#374151" stroke-width="1"/>
-      <text x="790" y="340" text-anchor="middle" fill="#818cf8" font-size="10" font-weight="600">Auth Validation</text>
-      <text x="790" y="358" text-anchor="middle" fill="#9ca3af" font-size="9">1. Validate SA token via K8s JWKS</text>
-      <text x="790" y="372" text-anchor="middle" fill="#9ca3af" font-size="9">2. Read X-User-Id: admin</text>
-      <text x="790" y="386" text-anchor="middle" fill="#10b981" font-size="9">3. Create session &rarr; contextId</text>
+      <rect x="680" y="322" width="220" height="70" rx="6" fill="#fffdf8" stroke="#c9bfae" stroke-width="1"/>
+      <text x="790" y="340" text-anchor="middle" fill="#3a72b0" font-size="10" font-weight="600">Auth Validation</text>
+      <text x="790" y="358" text-anchor="middle" fill="#7a6f5f" font-size="9">1. Validate SA token via K8s JWKS</text>
+      <text x="790" y="372" text-anchor="middle" fill="#7a6f5f" font-size="9">2. Read X-User-Id: admin</text>
+      <text x="790" y="386" text-anchor="middle" fill="#3a7d44" font-size="9">3. Create session &rarr; contextId</text>
 
       <!-- 4. controller -> proxy: 201 -->
-      <line x1="648" y1="410" x2="472" y2="410" stroke="#10b981" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#seq-arr-ret)"/>
-      <text x="560" y="404" text-anchor="middle" fill="#10b981" font-size="10" font-weight="600">201 Created {contextId}</text>
+      <line x1="648" y1="410" x2="472" y2="410" stroke="#3a7d44" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#seq-arr-ret)"/>
+      <text x="560" y="404" text-anchor="middle" fill="#3a7d44" font-size="10" font-weight="600">201 Created {contextId}</text>
 
       <!-- 5. proxy -> khook: 201 (passthrough) -->
-      <line x1="458" y1="440" x2="292" y2="440" stroke="#10b981" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#seq-arr-ret)"/>
-      <text x="375" y="434" text-anchor="middle" fill="#10b981" font-size="10">201 (passthrough)</text>
+      <line x1="458" y1="440" x2="292" y2="440" stroke="#3a7d44" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#seq-arr-ret)"/>
+      <text x="375" y="434" text-anchor="middle" fill="#3a7d44" font-size="10">201 (passthrough)</text>
 
       <!-- Activation box on khook for A2A -->
-      <rect x="278" y="440" width="14" height="40" rx="2" fill="#06b6d4" opacity="0.2" stroke="#06b6d4" stroke-width="1"/>
+      <rect x="278" y="440" width="14" height="40" rx="2" fill="#2d7d8e" opacity="0.2" stroke="#2d7d8e" stroke-width="1"/>
 
       <!-- 6. khook -> controller: A2A SendMessage -->
-      <line x1="285" y1="480" x2="645" y2="480" stroke="#818cf8" stroke-width="1.5" marker-end="url(#seq-arr)"/>
-      <text x="465" y="474" text-anchor="middle" fill="#818cf8" font-size="10" font-weight="500">A2A SendMessage (via proxy)</text>
+      <line x1="285" y1="480" x2="645" y2="480" stroke="#3a72b0" stroke-width="1.5" marker-end="url(#seq-arr)"/>
+      <text x="465" y="474" text-anchor="middle" fill="#3a72b0" font-size="10" font-weight="500">A2A SendMessage (via proxy)</text>
 
       <!-- Note: message content -->
-      <rect x="310" y="492" width="290" height="56" rx="6" fill="#111827" stroke="#374151" stroke-width="1"/>
-      <text x="455" y="510" text-anchor="middle" fill="#e5e7eb" font-size="9" font-weight="500">Message Payload:</text>
-      <text x="455" y="526" text-anchor="middle" fill="#9ca3af" font-size="9">"Pod compliance-report-generator-5c9f6bf67d-4gtl8</text>
-      <text x="455" y="540" text-anchor="middle" fill="#9ca3af" font-size="9">in namespace compliance-ops entered CrashLoopBackOff"</text>
+      <rect x="310" y="492" width="290" height="56" rx="6" fill="#fffdf8" stroke="#c9bfae" stroke-width="1"/>
+      <text x="455" y="510" text-anchor="middle" fill="#2c2416" font-size="9" font-weight="500">Message Payload:</text>
+      <text x="455" y="526" text-anchor="middle" fill="#7a6f5f" font-size="9">"Pod compliance-report-generator-5c9f6bf67d-4gtl8</text>
+      <text x="455" y="540" text-anchor="middle" fill="#7a6f5f" font-size="9">in namespace compliance-ops entered CrashLoopBackOff"</text>
 
       <!-- Activation box on controller -->
-      <rect x="648" y="480" width="14" height="60" rx="2" fill="#818cf8" opacity="0.2" stroke="#6366f1" stroke-width="1"/>
+      <rect x="648" y="480" width="14" height="60" rx="2" fill="#3a72b0" opacity="0.2" stroke="#2d5a8e" stroke-width="1"/>
 
       <!-- 7. controller -> agent: trigger -->
-      <line x1="655" y1="560" x2="830" y2="560" stroke="#10b981" stroke-width="1.5" marker-end="url(#seq-arr)"/>
-      <text x="742" y="554" text-anchor="middle" fill="#10b981" font-size="10" font-weight="500">Trigger agent execution</text>
+      <line x1="655" y1="560" x2="830" y2="560" stroke="#3a7d44" stroke-width="1.5" marker-end="url(#seq-arr)"/>
+      <text x="742" y="554" text-anchor="middle" fill="#3a7d44" font-size="10" font-weight="500">Trigger agent execution</text>
 
       <!-- Activation box on agent -->
-      <rect x="833" y="560" width="14" height="100" rx="2" fill="#10b981" opacity="0.2" stroke="#10b981" stroke-width="1"/>
+      <rect x="833" y="560" width="14" height="100" rx="2" fill="#3a7d44" opacity="0.2" stroke="#3a7d44" stroke-width="1"/>
 
       <!-- Agent work -->
-      <rect x="706" y="580" width="120" height="70" rx="6" fill="#0a1a15" stroke="#10b981" stroke-width="1"/>
-      <text x="766" y="598" text-anchor="middle" fill="#10b981" font-size="9" font-weight="600">Agent runs:</text>
-      <text x="766" y="614" text-anchor="middle" fill="#9ca3af" font-size="8">kubectl describe pod</text>
-      <text x="766" y="628" text-anchor="middle" fill="#9ca3af" font-size="8">kubectl logs</text>
-      <text x="766" y="642" text-anchor="middle" fill="#9ca3af" font-size="8">query prometheus</text>
+      <rect x="706" y="580" width="120" height="70" rx="6" fill="#fffdf8" stroke="#3a7d44" stroke-width="1"/>
+      <text x="766" y="598" text-anchor="middle" fill="#3a7d44" font-size="9" font-weight="600">Agent runs:</text>
+      <text x="766" y="614" text-anchor="middle" fill="#7a6f5f" font-size="8">kubectl describe pod</text>
+      <text x="766" y="628" text-anchor="middle" fill="#7a6f5f" font-size="8">kubectl logs</text>
+      <text x="766" y="642" text-anchor="middle" fill="#7a6f5f" font-size="8">query prometheus</text>
 
     </svg>
   </div>
@@ -535,59 +407,59 @@
   <div class="seq-wrap" style="padding-bottom: 60px;">
     <svg viewBox="0 0 920 320" xmlns="http://www.w3.org/2000/svg">
       <!-- Before box -->
-      <rect x="20" y="20" width="400" height="280" rx="12" fill="#111827" stroke="#ef4444" stroke-width="1.5"/>
-      <text x="220" y="50" text-anchor="middle" fill="#ef4444" font-size="14" font-weight="700">Incoming Request (from khook)</text>
+      <rect x="20" y="20" width="400" height="280" rx="12" fill="#fffdf8" stroke="#b33a3a" stroke-width="1.5"/>
+      <text x="220" y="50" text-anchor="middle" fill="#b33a3a" font-size="14" font-weight="700">Incoming Request (from khook)</text>
 
-      <text x="50" y="82" fill="#06b6d4" font-size="11" font-weight="600">POST /api/sessions?user_id=admin HTTP/1.1</text>
-      <line x1="40" y1="92" x2="400" y2="92" stroke="#374151" stroke-width="0.5"/>
+      <text x="50" y="82" fill="#2d7d8e" font-size="11" font-weight="600">POST /api/sessions?user_id=admin HTTP/1.1</text>
+      <line x1="40" y1="92" x2="400" y2="92" stroke="#c9bfae" stroke-width="0.5"/>
 
-      <text x="50" y="114" fill="#9ca3af" font-size="10">Host: khook-auth-proxy.kagent:8083</text>
-      <text x="50" y="132" fill="#9ca3af" font-size="10">Content-Type: application/json</text>
-      <text x="50" y="150" fill="#9ca3af" font-size="10">Content-Length: 42</text>
-      <text x="50" y="168" fill="#9ca3af" font-size="10" opacity="0.4">Authorization: (none)</text>
-      <text x="50" y="186" fill="#9ca3af" font-size="10" opacity="0.4">X-User-Id: (none)</text>
+      <text x="50" y="114" fill="#7a6f5f" font-size="10">Host: khook-auth-proxy.kagent:8083</text>
+      <text x="50" y="132" fill="#7a6f5f" font-size="10">Content-Type: application/json</text>
+      <text x="50" y="150" fill="#7a6f5f" font-size="10">Content-Length: 42</text>
+      <text x="50" y="168" fill="#7a6f5f" font-size="10" opacity="0.4">Authorization: (none)</text>
+      <text x="50" y="186" fill="#7a6f5f" font-size="10" opacity="0.4">X-User-Id: (none)</text>
 
-      <line x1="40" y1="200" x2="400" y2="200" stroke="#374151" stroke-width="0.5"/>
-      <text x="50" y="224" fill="#e5e7eb" font-size="10" font-family="monospace">{"contextId": "ctx-fa5151..."}</text>
+      <line x1="40" y1="200" x2="400" y2="200" stroke="#c9bfae" stroke-width="0.5"/>
+      <text x="50" y="224" fill="#2c2416" font-size="10" font-family="monospace">{"contextId": "ctx-fa5151..."}</text>
 
       <!-- Status badges -->
-      <rect x="50" y="248" width="80" height="22" rx="4" fill="rgba(239,68,68,0.1)" stroke="#ef4444" stroke-width="1"/>
-      <text x="90" y="263" text-anchor="middle" fill="#ef4444" font-size="9" font-weight="600">No Auth</text>
+      <rect x="50" y="248" width="80" height="22" rx="4" fill="rgba(239,68,68,0.1)" stroke="#b33a3a" stroke-width="1"/>
+      <text x="90" y="263" text-anchor="middle" fill="#b33a3a" font-size="9" font-weight="600">No Auth</text>
 
-      <rect x="140" y="248" width="100" height="22" rx="4" fill="rgba(239,68,68,0.1)" stroke="#ef4444" stroke-width="1"/>
-      <text x="190" y="263" text-anchor="middle" fill="#ef4444" font-size="9" font-weight="600">Would 400</text>
+      <rect x="140" y="248" width="100" height="22" rx="4" fill="rgba(239,68,68,0.1)" stroke="#b33a3a" stroke-width="1"/>
+      <text x="190" y="263" text-anchor="middle" fill="#b33a3a" font-size="9" font-weight="600">Would 400</text>
 
       <!-- Arrow -->
-      <path d="M 420 160 L 480 160" stroke="#f97316" stroke-width="3" marker-end="url(#arr-orange)"/>
-      <text x="452" y="150" text-anchor="middle" fill="#f97316" font-size="10" font-weight="700">PROXY</text>
+      <path d="M 420 160 L 480 160" stroke="#c4652f" stroke-width="3" marker-end="url(#arr-orange)"/>
+      <text x="452" y="150" text-anchor="middle" fill="#c4652f" font-size="10" font-weight="700">PROXY</text>
 
       <!-- After box -->
-      <rect x="500" y="20" width="400" height="280" rx="12" fill="#111827" stroke="#10b981" stroke-width="1.5"/>
-      <text x="700" y="50" text-anchor="middle" fill="#10b981" font-size="14" font-weight="700">Forwarded Request (to controller)</text>
+      <rect x="500" y="20" width="400" height="280" rx="12" fill="#fffdf8" stroke="#3a7d44" stroke-width="1.5"/>
+      <text x="700" y="50" text-anchor="middle" fill="#3a7d44" font-size="14" font-weight="700">Forwarded Request (to controller)</text>
 
-      <text x="530" y="82" fill="#06b6d4" font-size="11" font-weight="600">POST /api/sessions?user_id=admin HTTP/1.1</text>
-      <line x1="520" y1="92" x2="880" y2="92" stroke="#374151" stroke-width="0.5"/>
+      <text x="530" y="82" fill="#2d7d8e" font-size="11" font-weight="600">POST /api/sessions?user_id=admin HTTP/1.1</text>
+      <line x1="520" y1="92" x2="880" y2="92" stroke="#c9bfae" stroke-width="0.5"/>
 
-      <text x="530" y="114" fill="#9ca3af" font-size="10" text-decoration="line-through" opacity="0.4">Host: (stripped)</text>
-      <text x="530" y="132" fill="#9ca3af" font-size="10">Content-Type: application/json</text>
-      <text x="530" y="150" fill="#9ca3af" font-size="10">Content-Length: 42</text>
+      <text x="530" y="114" fill="#7a6f5f" font-size="10" text-decoration="line-through" opacity="0.4">Host: (stripped)</text>
+      <text x="530" y="132" fill="#7a6f5f" font-size="10">Content-Type: application/json</text>
+      <text x="530" y="150" fill="#7a6f5f" font-size="10">Content-Length: 42</text>
 
       <!-- Highlighted new headers -->
       <rect x="520" y="158" width="370" height="20" rx="3" fill="rgba(249,115,22,0.12)"/>
-      <text x="530" y="174" fill="#f97316" font-size="11" font-weight="700">Authorization: Bearer eyJhbGciOiJSUzI1Ni...</text>
+      <text x="530" y="174" fill="#c4652f" font-size="11" font-weight="700">Authorization: Bearer eyJhbGciOiJSUzI1Ni...</text>
 
       <rect x="520" y="182" width="370" height="20" rx="3" fill="rgba(249,115,22,0.12)"/>
-      <text x="530" y="198" fill="#f97316" font-size="11" font-weight="700">X-User-Id: admin</text>
+      <text x="530" y="198" fill="#c4652f" font-size="11" font-weight="700">X-User-Id: admin</text>
 
-      <line x1="520" y1="212" x2="880" y2="212" stroke="#374151" stroke-width="0.5"/>
-      <text x="530" y="236" fill="#e5e7eb" font-size="10" font-family="monospace">{"contextId": "ctx-fa5151..."}</text>
+      <line x1="520" y1="212" x2="880" y2="212" stroke="#c9bfae" stroke-width="0.5"/>
+      <text x="530" y="236" fill="#2c2416" font-size="10" font-family="monospace">{"contextId": "ctx-fa5151..."}</text>
 
       <!-- Status badges -->
-      <rect x="530" y="248" width="110" height="22" rx="4" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1"/>
-      <text x="585" y="263" text-anchor="middle" fill="#10b981" font-size="9" font-weight="600">Authenticated</text>
+      <rect x="530" y="248" width="110" height="22" rx="4" fill="rgba(16,185,129,0.1)" stroke="#3a7d44" stroke-width="1"/>
+      <text x="585" y="263" text-anchor="middle" fill="#3a7d44" font-size="9" font-weight="600">Authenticated</text>
 
-      <rect x="650" y="248" width="80" height="22" rx="4" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1"/>
-      <text x="690" y="263" text-anchor="middle" fill="#10b981" font-size="9" font-weight="600">201 OK</text>
+      <rect x="650" y="248" width="80" height="22" rx="4" fill="rgba(16,185,129,0.1)" stroke="#3a7d44" stroke-width="1"/>
+      <text x="690" y="263" text-anchor="middle" fill="#3a7d44" font-size="9" font-weight="600">201 OK</text>
 
     </svg>
   </div>
