@@ -460,7 +460,11 @@
     <div class="hero-badge">CNCF Sandbox Project</div>
     <h1><span>kagent</span> Bank Platform Demo</h1>
     <p>AI-powered Kubernetes operations for financial services. Crash diagnosis, migration planning, Istio ambient mesh troubleshooting, and capacity forecasting — driven by an orchestrator agent with specialist sub-agents.</p>
-    <a href="architecture.html" style="display: inline-block; margin-top: 24px; padding: 12px 28px; background: rgba(99, 102, 241, 0.15); color: var(--accent-light); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; font-weight: 600; font-size: 0.95rem; text-decoration: none; transition: background 0.15s;">View Architecture Diagram &rarr;</a>
+    <div style="display: flex; gap: 12px; justify-content: center; margin-top: 24px; flex-wrap: wrap;">
+      <a href="architecture.html" style="display: inline-block; padding: 12px 28px; background: rgba(99, 102, 241, 0.15); color: var(--accent-light); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; font-weight: 600; font-size: 0.95rem; text-decoration: none; transition: background 0.15s;">Architecture Diagram &rarr;</a>
+      <a href="khook-auth-proxy.html" style="display: inline-block; padding: 12px 28px; background: rgba(249, 115, 22, 0.15); color: #f97316; border: 1px solid rgba(249, 115, 22, 0.3); border-radius: 8px; font-weight: 600; font-size: 0.95rem; text-decoration: none; transition: background 0.15s;">khook Auth Proxy &rarr;</a>
+      <a href="khook-diagram.html" style="display: inline-block; padding: 12px 28px; background: rgba(6, 182, 212, 0.15); color: #06b6d4; border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 8px; font-weight: 600; font-size: 0.95rem; text-decoration: none; transition: background 0.15s;">khook Flow Diagram &rarr;</a>
+    </div>
   </div>
 
   <!-- What is kagent -->
@@ -511,7 +515,7 @@
       <p>The bank-platform-agent orchestrates specialist sub-agents (k8s, Istio, Helm, GitHub Issues) and queries Prometheus/Grafana directly. k8s-agent uses Claude Sonnet 4.6 with <strong>human-in-the-loop approval</strong> for destructive operations. All demo namespaces run on Istio ambient mesh (ztunnel L4, no sidecars).</p>
 
       <div class="arch-diagram">
-        <div class="arch-label">kagent UI / Chat / Slack A2A / khook</div>
+        <div class="arch-label">kagent UI / Chat / Slack A2A / <a href="khook-auth-proxy.html" style="color: var(--orange);">khook</a></div>
         <div class="arch-row">
           <div class="arch-box accent">bank-platform-agent (orchestrator)</div>
         </div>
@@ -523,13 +527,22 @@
           <div class="arch-box accent">helm-agent</div>
           <div class="arch-box accent">github-issues-agent<br><span style="font-size:0.7rem;opacity:0.7;">xAI Grok</span></div>
         </div>
-        <div class="arch-label" style="margin-top: 12px;">Direct MCP Tools</div>
+        <div class="arch-label" style="margin-top: 12px;">Autonomous &amp; Infrastructure Agents</div>
+        <div class="arch-row">
+          <div class="arch-box accent" style="border-color: var(--green);">compliance-incident-agent<br><span style="font-size:0.7rem;opacity:0.7;">Claude Sonnet 4.6 &middot; <a href="khook-diagram.html" style="color: var(--orange); text-decoration: none;">khook-triggered</a></span></div>
+          <div class="arch-box accent" style="border-color: var(--orange);">f5-bigip-agent<br><span style="font-size:0.7rem;opacity:0.7;">xAI Grok &middot; HITL</span></div>
+          <div class="arch-box accent" style="border-color: var(--red);">fortigate-agent<br><span style="font-size:0.7rem;opacity:0.7;">xAI Grok &middot; HITL</span></div>
+          <div class="arch-box accent">github-pr-agent<br><span style="font-size:0.7rem;opacity:0.7;">AgentGateway LLM</span></div>
+        </div>
+        <div class="arch-label" style="margin-top: 12px;">MCP Tool Servers</div>
         <div class="arch-row">
           <div class="arch-box green">prometheus-mcp</div>
           <div class="arch-box green">grafana-mcp</div>
+          <div class="arch-box green" style="border-color: var(--orange);">f5-bigip-mcp<br><span style="font-size:0.7rem;opacity:0.5;">iControl REST</span></div>
+          <div class="arch-box green" style="border-color: var(--red);">fortigate-mcp<br><span style="font-size:0.7rem;opacity:0.5;">FortiOS REST</span></div>
         </div>
         <div class="arch-arrow">&darr;</div>
-        <div class="arch-label">Kubernetes Cluster &middot; Istio Ambient Mesh</div>
+        <div class="arch-label">Kubernetes Cluster &middot; Istio Ambient Mesh &middot; Network Infrastructure</div>
         <div class="arch-row">
           <div class="arch-box">finance-payments</div>
           <div class="arch-box">risk-management</div>
@@ -538,7 +551,8 @@
         <div class="arch-row" style="margin-top: 8px;">
           <div class="arch-box green" style="font-size: 0.78rem;">ztunnel (L4)</div>
           <div class="arch-box green" style="font-size: 0.78rem;">istiod</div>
-          <div class="arch-box green" style="font-size: 0.78rem;">istio-cni</div>
+          <div class="arch-box" style="font-size: 0.78rem; border-color: var(--orange);">F5 BIG-IP</div>
+          <div class="arch-box" style="font-size: 0.78rem; border-color: var(--red);">FortiGate</div>
           <div class="arch-box" style="font-size: 0.78rem;"><a href="http://kiali.rooster.maniak.com:20001" target="_blank" style="color: inherit;">Kiali UI</a></div>
         </div>
       </div>
@@ -871,6 +885,144 @@
     </div>
   </section>
 
+  <!-- Agents -->
+  <section>
+    <div class="container">
+      <h2>Deployed <span>Agents</span></h2>
+      <p>Six AI agents in the kagent namespace, each with specialized tools and A2A skills. Three LLM backends: Claude Sonnet 4.6, xAI Grok, and OpenAI via AgentGateway.</p>
+
+      <div class="features" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+
+        <div class="feature" style="border-left: 3px solid var(--accent-light);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 style="margin: 0;">k8s-agent</h3>
+            <span class="tag tag-cyan">Claude Sonnet 4.6</span>
+          </div>
+          <p>Kubernetes expert with <strong>human-in-the-loop</strong> approval for destructive operations. Manages cluster ops, troubleshooting, and maintenance.</p>
+          <div style="margin-top: 10px; font-size: 0.78rem; color: var(--text-muted);">
+            <strong style="color: var(--text);">Tools:</strong> kagent-tool-server (18 tools)<br>
+            <strong style="color: var(--text);">Skills:</strong> cluster-diagnostics, resource-management, security-audit
+          </div>
+        </div>
+
+        <div class="feature" style="border-left: 3px solid var(--green);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 style="margin: 0;">compliance-incident-agent</h3>
+            <span class="tag tag-cyan">Claude Sonnet 4.6</span>
+          </div>
+          <p>Autonomous incident responder triggered by <a href="khook-auth-proxy.html">khook</a> on pod restarts and OOM kills. Diagnoses crashes, creates GitHub issues.</p>
+          <div style="margin-top: 10px; font-size: 0.78rem; color: var(--text-muted);">
+            <strong style="color: var(--text);">Tools:</strong> kagent-tool-server (7 read-only tools)<br>
+            <strong style="color: var(--text);">Skills:</strong> compliance-incident-response<br>
+            <strong style="color: var(--text);">Delegates to:</strong> github-issues-agent
+          </div>
+        </div>
+
+        <div class="feature" style="border-left: 3px solid var(--yellow);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 style="margin: 0;">github-issues-agent</h3>
+            <span class="tag tag-orange" style="background: rgba(249,115,22,0.12); color: #f97316;">xAI Grok</span>
+          </div>
+          <p>Manages GitHub repos &mdash; creates issues, branches, PRs, and file updates. Used by other agents for incident tracking.</p>
+          <div style="margin-top: 10px; font-size: 0.78rem; color: var(--text-muted);">
+            <strong style="color: var(--text);">Tools:</strong> github-mcp-remote (18 tools)<br>
+            <strong style="color: var(--text);">Skills:</strong> manage-github-repository
+          </div>
+        </div>
+
+        <div class="feature" style="border-left: 3px solid var(--yellow);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 style="margin: 0;">github-pr-agent</h3>
+            <span class="tag tag-green">AgentGateway LLM</span>
+          </div>
+          <p>Reviews and fixes pull requests. Code review, branch management, and Copilot review integration.</p>
+          <div style="margin-top: 10px; font-size: 0.78rem; color: var(--text-muted);">
+            <strong style="color: var(--text);">Tools:</strong> github-mcp-remote (16 tools)<br>
+            <strong style="color: var(--text);">Skills:</strong> fix-pull-requests
+          </div>
+        </div>
+
+        <div class="feature" style="border-left: 3px solid var(--orange);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 style="margin: 0;">f5-bigip-agent</h3>
+            <span class="tag tag-orange" style="background: rgba(249,115,22,0.12); color: #f97316;">xAI Grok</span>
+          </div>
+          <p>F5 BIG-IP network infrastructure &mdash; manages pools, virtual servers, nodes, and health monitors via iControl REST. <strong>HITL required</strong> for all changes.</p>
+          <div style="margin-top: 10px; font-size: 0.78rem; color: var(--text-muted);">
+            <strong style="color: var(--text);">Tools:</strong> f5-bigip-mcp (17 tools)<br>
+            <strong style="color: var(--text);">Skills:</strong> f5-bigip-management<br>
+            <strong style="color: var(--text);">Creds:</strong> Vault &rarr; f5-bigip-credentials
+          </div>
+        </div>
+
+        <div class="feature" style="border-left: 3px solid var(--red);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 style="margin: 0;">fortigate-agent</h3>
+            <span class="tag tag-orange" style="background: rgba(249,115,22,0.12); color: #f97316;">xAI Grok</span>
+          </div>
+          <p>FortiGate firewall management &mdash; policies, VIPs, addresses, address groups, and interfaces via FortiOS REST. <strong>HITL required</strong> for all changes.</p>
+          <div style="margin-top: 10px; font-size: 0.78rem; color: var(--text-muted);">
+            <strong style="color: var(--text);">Tools:</strong> fortigate-mcp (16 tools)<br>
+            <strong style="color: var(--text);">Skills:</strong> fortigate-management<br>
+            <strong style="color: var(--text);">Creds:</strong> Vault &rarr; fortigate-credentials
+          </div>
+        </div>
+
+      </div>
+
+      <!-- MCP Tool Servers -->
+      <h3 style="margin-top: 40px; font-size: 1.1rem;">MCP <span style="color: var(--cyan);">Tool Servers</span></h3>
+      <table class="flow-table" style="margin-top: 16px;">
+        <thead>
+          <tr>
+            <th>Server</th>
+            <th>Type</th>
+            <th>Used By</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>kagent-tool-server</code></td>
+            <td>Built-in</td>
+            <td>k8s-agent, compliance-incident-agent</td>
+            <td>Kubernetes operations &mdash; get/describe/create/delete resources, logs, events, helm</td>
+          </tr>
+          <tr>
+            <td><code>github-mcp-remote</code></td>
+            <td>Remote (AgentGateway)</td>
+            <td>github-issues-agent, github-pr-agent</td>
+            <td>GitHub API &mdash; issues, PRs, branches, file operations, Copilot reviews</td>
+          </tr>
+          <tr>
+            <td><code>f5-bigip-mcp</code></td>
+            <td>Remote (Streamable HTTP)</td>
+            <td>f5-bigip-agent</td>
+            <td>F5 BIG-IP iControl REST &mdash; pools, virtual servers, nodes, monitors</td>
+          </tr>
+          <tr>
+            <td><code>fortigate-mcp</code></td>
+            <td>Remote (Streamable HTTP)</td>
+            <td>fortigate-agent</td>
+            <td>FortiOS REST &mdash; firewall policies, VIPs, addresses, interfaces</td>
+          </tr>
+          <tr>
+            <td><code>prometheus-mcp</code></td>
+            <td>Remote (AgentGateway)</td>
+            <td>bank-platform-agent</td>
+            <td>Prometheus PromQL &mdash; execute_query, range_query, metric_metadata</td>
+          </tr>
+          <tr>
+            <td><code>grafana-mcp</code></td>
+            <td>Remote (AgentGateway)</td>
+            <td>bank-platform-agent</td>
+            <td>Grafana dashboards &mdash; query_prometheus, list/get dashboards</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
   <!-- What's Deployed -->
   <section>
     <div class="container">
@@ -903,8 +1055,8 @@
           </tr>
           <tr>
             <td><code>kagent</code></td>
-            <td>bank-platform-agent, k8s-agent (Claude Sonnet 4.6 + HITL), compliance-incident-agent (Claude Sonnet 4.6), github-issues-agent (Grok), prometheus-mcp-server, khook controller</td>
-            <td>AI orchestrator + sub-agents + incident responder + Prometheus tool server + event watcher</td>
+            <td>bank-platform-agent, k8s-agent, compliance-incident-agent, github-issues-agent, github-pr-agent, f5-bigip-agent, fortigate-agent, khook, khook-auth-proxy, f5-wrapper, fortigate-mcp-server</td>
+            <td>AI agents + MCP tool servers + event watcher + auth proxy</td>
           </tr>
           <tr>
             <td><code>istio-system</code></td>
