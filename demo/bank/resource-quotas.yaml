@@ -1,0 +1,39 @@
+# Resource quotas for demo namespaces — kagent uses these for migration readiness checks
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: finance-quota
+  namespace: finance-payments
+spec:
+  hard:
+    requests.cpu: "2"
+    requests.memory: 4Gi
+    limits.cpu: "4"
+    limits.memory: 8Gi
+    pods: "20"
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: risk-quota
+  namespace: risk-management
+spec:
+  hard:
+    requests.cpu: "4"
+    requests.memory: 8Gi
+    limits.cpu: "8"
+    limits.memory: 16Gi
+    pods: "30"
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compliance-quota
+  namespace: compliance-ops
+spec:
+  hard:
+    requests.cpu: "1"
+    requests.memory: 2Gi
+    limits.cpu: "2"
+    limits.memory: 4Gi
+    pods: "10"

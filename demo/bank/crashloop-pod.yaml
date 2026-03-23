@@ -1,0 +1,81 @@
+# Scenario 1: Java CrashLoopBackOff — payment-service with OOM stack trace
+# kagent will diagnose the crash, find the NullPointerException + OutOfMemoryError buried in logs.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crash-app-logs
+  namespace: finance-payments
+data:
+  startup.sh: |
+    #!/bin/sh
+    echo 'INFO  2026-03-25 12:01:01 PaymentProcessor - Starting payment-service v3.2.1'
+    echo 'INFO  2026-03-25 12:01:01 PaymentProcessor - Environment: dev-cluster-uk-east'
+    echo 'INFO  2026-03-25 12:01:02 PaymentProcessor - Loading configuration from ConfigMap'
+    echo 'INFO  2026-03-25 12:01:02 PaymentProcessor - SWIFT gateway endpoint: swift-gw.finance-payments.svc:8443'
+    echo 'INFO  2026-03-25 12:01:02 DBConnectionPool - Initializing HikariCP pool (min=5, max=20)'
+    echo 'INFO  2026-03-25 12:01:03 DBConnectionPool - Pool initialized successfully — 5 connections ready'
+    echo 'DEBUG 2026-03-25 12:01:03 CacheManager - Warming transaction cache from Redis cluster'
+    echo 'DEBUG 2026-03-25 12:01:04 CacheManager - Loading GBP settlement transactions (last 24h)'
+    echo 'DEBUG 2026-03-25 12:01:04 CacheManager - Loading EUR settlement transactions (last 24h)'
+    echo 'DEBUG 2026-03-25 12:01:05 CacheManager - Loading USD settlement transactions (last 24h)'
+    echo 'INFO  2026-03-25 12:01:05 CacheManager - Cache warmed: 247,831 transactions loaded'
+    echo 'INFO  2026-03-25 12:01:06 PaymentProcessor - Registering health check endpoint /healthz'
+    echo 'INFO  2026-03-25 12:01:06 PaymentProcessor - Registering metrics endpoint /metrics'
+    echo 'INFO  2026-03-25 12:01:07 PaymentProcessor - Starting gRPC server on port 9090'
+    echo 'INFO  2026-03-25 12:01:07 PaymentProcessor - Starting HTTP server on port 8080'
+    echo 'INFO  2026-03-25 12:01:07 PaymentProcessor - Service ready — processing payments'
+    echo 'INFO  2026-03-25 12:01:08 PaymentProcessor - Processing batch settlement #BT-20260325-001'
+    echo 'INFO  2026-03-25 12:01:08 PaymentProcessor - Batch contains 12,481 transactions (GBP 4.2M)'
+    echo 'WARN  2026-03-25 12:01:09 CacheManager - Heap usage at 78% — approaching threshold'
+    echo 'WARN  2026-03-25 12:01:09 CacheManager - GC pause detected: 1,240ms (exceeds 500ms SLA)'
+    echo 'ERROR 2026-03-25 12:01:10 PaymentProcessor - Exception in thread "main" during batch settlement'
+    echo 'java.lang.NullPointerException: Cannot invoke method getAmount() on null transaction reference'
+    echo '    at com.bank.payments.PaymentProcessor.processPayment(PaymentProcessor.java:314)'
+    echo '    at com.bank.payments.PaymentProcessor.processBatch(PaymentProcessor.java:201)'
+    echo '    at com.bank.payments.PaymentProcessor.run(PaymentProcessor.java:89)'
+    echo '    at java.lang.Thread.run(Thread.java:750)'
+    echo 'Caused by: java.lang.OutOfMemoryError: Java heap space'
+    echo '    at com.bank.payments.TransactionCache.loadAll(TransactionCache.java:201)'
+    echo '    at com.bank.payments.CacheManager.warmCache(CacheManager.java:147)'
+    echo '    at com.bank.payments.PaymentProcessor.initialize(PaymentProcessor.java:52)'
+    echo 'FATAL 2026-03-25 12:01:10 PaymentProcessor - Service shutting down due to unrecoverable error'
+    exit 1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service
+  namespace: finance-payments
+  labels:
+    app: payment-service
+    version: v3.2.1
+    team: finance
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment-service
+  template:
+    metadata:
+      labels:
+        app: payment-service
+        version: v3.2.1
+    spec:
+      containers:
+      - name: payment-service
+        image: busybox
+        command: ["/bin/sh", "/app/startup.sh"]
+        volumeMounts:
+        - name: scripts
+          mountPath: /app
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "50m"
+          limits:
+            memory: "64Mi"
+      volumes:
+      - name: scripts
+        configMap:
+          name: crash-app-logs
+          defaultMode: 0755

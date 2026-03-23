@@ -1,0 +1,32 @@
+# Scenario 4: Misconfigured Istio VirtualService
+# Routes to payment-svc-v2 which does NOT exist as a k8s Service.
+# kagent will find this mismatch and flag it as root cause.
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-service
+  namespace: finance-payments
+  labels:
+    app: payment-service
+spec:
+  selector:
+    app: payment-service
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: http
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: payment-vs
+  namespace: finance-payments
+spec:
+  hosts:
+  - payment-service
+  http:
+  - route:
+    - destination:
+        host: payment-svc-v2
+        port:
+          number: 8080

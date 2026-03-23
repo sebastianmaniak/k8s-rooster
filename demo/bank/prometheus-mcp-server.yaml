@@ -1,0 +1,66 @@
+# Prometheus MCP Server — provides PromQL query tools to kagent agents
+# Exposes execute_query, execute_range_query, get_metric_metadata, list_metrics
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-mcp-server
+  namespace: kagent
+  labels:
+    app: prometheus-mcp-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus-mcp-server
+  template:
+    metadata:
+      labels:
+        app: prometheus-mcp-server
+    spec:
+      containers:
+      - name: prometheus-mcp
+        image: pab1it0/prometheus-mcp-server:latest
+        ports:
+        - containerPort: 9090
+          name: mcp
+        env:
+        - name: PROMETHEUS_URL
+          value: "http://prometheus-server.monitoring.svc.cluster.local:80"
+        - name: MCP_TRANSPORT
+          value: "sse"
+        - name: MCP_PORT
+          value: "9090"
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 9090
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 9090
+          initialDelaySeconds: 5
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-mcp-server
+  namespace: kagent
+  labels:
+    app: prometheus-mcp-server
+spec:
+  selector:
+    app: prometheus-mcp-server
+  ports:
+  - port: 9090
+    targetPort: 9090
+    name: mcp
