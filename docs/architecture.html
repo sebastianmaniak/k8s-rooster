@@ -192,7 +192,7 @@
 
   <!-- Main Architecture SVG -->
   <div class="diagram-wrap">
-    <svg viewBox="0 0 1060 720" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 1060 790" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
           <path d="M0,0 L8,3 L0,6" fill="#6b7280"/>
@@ -252,129 +252,158 @@
 
       <!-- Arrow: Agent <-> LLM -->
       <line x1="370" y1="185" x2="300" y2="185" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow)"/>
-      <text x="335" y="178" text-anchor="middle" fill="#9ca3af" font-size="9">OpenAI / Claude</text>
+      <text x="335" y="178" text-anchor="middle" fill="#9ca3af" font-size="9">OpenAI / Claude / Grok</text>
+
+      <!-- ============ SUB-AGENTS ROW ============ -->
+      <text x="530" y="230" text-anchor="middle" fill="#9ca3af" font-size="10" font-weight="600" letter-spacing="0.06em">SUB-AGENTS (A2A delegation)</text>
+
+      <!-- Arrow: Agent -> Sub-agents -->
+      <line x1="530" y1="215" x2="530" y2="238" stroke="#f97316" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+      <!-- k8s-agent -->
+      <rect x="80" y="240" width="200" height="50" rx="8" fill="#1a1205" stroke="#f97316" stroke-width="1.5"/>
+      <text x="180" y="260" text-anchor="middle" fill="#f97316" font-size="11" font-weight="700">k8s-agent</text>
+      <text x="180" y="276" text-anchor="middle" fill="#9ca3af" font-size="9">Claude Sonnet 4.6</text>
+
+      <!-- istio-agent -->
+      <rect x="300" y="240" width="160" height="50" rx="8" fill="#1a1205" stroke="#f97316" stroke-width="1.5"/>
+      <text x="380" y="260" text-anchor="middle" fill="#f97316" font-size="11" font-weight="700">istio-agent</text>
+      <text x="380" y="276" text-anchor="middle" fill="#9ca3af" font-size="9">GPT-5.2 (default)</text>
+
+      <!-- helm-agent -->
+      <rect x="480" y="240" width="160" height="50" rx="8" fill="#1a1205" stroke="#f97316" stroke-width="1.5"/>
+      <text x="560" y="260" text-anchor="middle" fill="#f97316" font-size="11" font-weight="700">helm-agent</text>
+      <text x="560" y="276" text-anchor="middle" fill="#9ca3af" font-size="9">GPT-5.2 (default)</text>
+
+      <!-- github-issues-agent -->
+      <rect x="660" y="240" width="210" height="50" rx="8" fill="#1a1205" stroke="#f97316" stroke-width="1.5"/>
+      <text x="765" y="260" text-anchor="middle" fill="#f97316" font-size="11" font-weight="700">github-issues-agent</text>
+      <text x="765" y="276" text-anchor="middle" fill="#9ca3af" font-size="9">xAI Grok</text>
+
+      <!-- Arrows: orchestrator -> sub-agents -->
+      <line x1="430" y1="215" x2="180" y2="240" stroke="#f97316" stroke-width="1" stroke-dasharray="4,2"/>
+      <line x1="480" y1="215" x2="380" y2="240" stroke="#f97316" stroke-width="1" stroke-dasharray="4,2"/>
+      <line x1="580" y1="215" x2="560" y2="240" stroke="#f97316" stroke-width="1" stroke-dasharray="4,2"/>
+      <line x1="630" y1="215" x2="765" y2="240" stroke="#f97316" stroke-width="1" stroke-dasharray="4,2"/>
 
       <!-- ============ HITL Gate ============ -->
-      <rect x="415" y="232" width="230" height="36" rx="8" fill="#1a1508" stroke="#f59e0b" stroke-width="1.5"/>
-      <text x="530" y="255" text-anchor="middle" fill="#f59e0b" font-size="11" font-weight="600">Human-in-the-Loop Gate</text>
+      <rect x="80" y="300" width="200" height="32" rx="6" fill="#1a1508" stroke="#f59e0b" stroke-width="1.5"/>
+      <text x="180" y="320" text-anchor="middle" fill="#f59e0b" font-size="10" font-weight="600">Human-in-the-Loop Gate</text>
 
-      <!-- Arrow: Agent -> HITL -->
-      <line x1="530" y1="215" x2="530" y2="232" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#arrow-yellow)"/>
+      <!-- Arrow: k8s-agent -> HITL -->
+      <line x1="180" y1="290" x2="180" y2="300" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#arrow-yellow)"/>
 
       <!-- HITL approve/reject labels -->
-      <text x="655" y="246" fill="#10b981" font-size="10" font-weight="600">Approve</text>
-      <text x="655" y="260" fill="#ef4444" font-size="10" font-weight="600">Reject</text>
+      <text x="292" y="312" fill="#10b981" font-size="9" font-weight="600">Approve</text>
+      <text x="292" y="325" fill="#ef4444" font-size="9" font-weight="600">Reject</text>
 
       <!-- Arrow: HITL -> Tools -->
-      <line x1="530" y1="268" x2="530" y2="310" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <line x1="180" y1="332" x2="180" y2="380" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <!-- Arrow: other agents -> Tools -->
+      <line x1="380" y1="290" x2="380" y2="380" stroke="#6b7280" stroke-width="1" stroke-dasharray="4,2"/>
+      <line x1="560" y1="290" x2="560" y2="380" stroke="#6b7280" stroke-width="1" stroke-dasharray="4,2"/>
+      <line x1="765" y1="290" x2="870" y2="380" stroke="#6b7280" stroke-width="1" stroke-dasharray="4,2"/>
 
       <!-- ============ ROW 3: MCP Tool Servers ============ -->
-      <text x="530" y="308" text-anchor="middle" fill="#9ca3af" font-size="11" font-weight="600" letter-spacing="0.08em">MCP TOOL SERVERS</text>
+      <text x="530" y="375" text-anchor="middle" fill="#9ca3af" font-size="11" font-weight="600" letter-spacing="0.08em">MCP TOOL SERVERS</text>
 
       <!-- Kubernetes Tools -->
-      <rect x="80" y="320" width="200" height="70" rx="10" fill="#0a1a15" stroke="#06b6d4" stroke-width="1.5"/>
-      <text x="180" y="345" text-anchor="middle" fill="#06b6d4" font-size="12" font-weight="700">kagent-tool-server</text>
-      <text x="180" y="360" text-anchor="middle" fill="#9ca3af" font-size="9">k8s_get_resources, get_pod_logs</text>
-      <text x="180" y="373" text-anchor="middle" fill="#9ca3af" font-size="9">describe_resource, get_events</text>
-      <text x="180" y="386" text-anchor="middle" fill="#9ca3af" font-size="9">helm_list_releases, execute_command</text>
+      <rect x="80" y="388" width="200" height="70" rx="10" fill="#0a1a15" stroke="#06b6d4" stroke-width="1.5"/>
+      <text x="180" y="413" text-anchor="middle" fill="#06b6d4" font-size="12" font-weight="700">kagent-tool-server</text>
+      <text x="180" y="428" text-anchor="middle" fill="#9ca3af" font-size="9">k8s_get_resources, get_pod_logs</text>
+      <text x="180" y="441" text-anchor="middle" fill="#9ca3af" font-size="9">describe_resource, get_events</text>
+      <text x="180" y="454" text-anchor="middle" fill="#9ca3af" font-size="9">helm_list_releases, execute_command</text>
 
       <!-- Prometheus MCP -->
-      <rect x="310" y="320" width="200" height="70" rx="10" fill="#0a1a15" stroke="#06b6d4" stroke-width="1.5"/>
-      <text x="410" y="345" text-anchor="middle" fill="#06b6d4" font-size="12" font-weight="700">prometheus-mcp</text>
-      <text x="410" y="362" text-anchor="middle" fill="#9ca3af" font-size="9">execute_query, execute_range_query</text>
-      <text x="410" y="375" text-anchor="middle" fill="#9ca3af" font-size="9">get_metric_metadata, list_metrics</text>
+      <rect x="310" y="388" width="200" height="70" rx="10" fill="#0a1a15" stroke="#06b6d4" stroke-width="1.5"/>
+      <text x="410" y="413" text-anchor="middle" fill="#06b6d4" font-size="12" font-weight="700">prometheus-mcp</text>
+      <text x="410" y="430" text-anchor="middle" fill="#9ca3af" font-size="9">execute_query, execute_range_query</text>
+      <text x="410" y="443" text-anchor="middle" fill="#9ca3af" font-size="9">get_metric_metadata, list_metrics</text>
 
       <!-- Grafana MCP -->
-      <rect x="540" y="320" width="200" height="70" rx="10" fill="#0a1a15" stroke="#06b6d4" stroke-width="1.5"/>
-      <text x="640" y="345" text-anchor="middle" fill="#06b6d4" font-size="12" font-weight="700">grafana-mcp</text>
-      <text x="640" y="362" text-anchor="middle" fill="#9ca3af" font-size="9">query_prometheus</text>
-      <text x="640" y="375" text-anchor="middle" fill="#9ca3af" font-size="9">list_dashboards, get_dashboard</text>
+      <rect x="540" y="388" width="200" height="70" rx="10" fill="#0a1a15" stroke="#06b6d4" stroke-width="1.5"/>
+      <text x="640" y="413" text-anchor="middle" fill="#06b6d4" font-size="12" font-weight="700">grafana-mcp</text>
+      <text x="640" y="430" text-anchor="middle" fill="#9ca3af" font-size="9">query_prometheus</text>
+      <text x="640" y="443" text-anchor="middle" fill="#9ca3af" font-size="9">list_dashboards, get_dashboard</text>
 
       <!-- GitHub MCP -->
-      <rect x="770" y="320" width="200" height="70" rx="10" fill="#0a1a15" stroke="#06b6d4" stroke-width="1.5"/>
-      <text x="870" y="345" text-anchor="middle" fill="#06b6d4" font-size="12" font-weight="700">github-mcp-remote</text>
-      <text x="870" y="362" text-anchor="middle" fill="#9ca3af" font-size="9">create_issue, create_pull_request</text>
-      <text x="870" y="375" text-anchor="middle" fill="#9ca3af" font-size="9">list_branches, read_file</text>
-
-      <!-- Arrows: HITL -> Tool servers -->
-      <line x1="420" y1="268" x2="180" y2="320" stroke="#06b6d4" stroke-width="1" stroke-dasharray="4,2"/>
-      <line x1="480" y1="268" x2="410" y2="320" stroke="#06b6d4" stroke-width="1" stroke-dasharray="4,2"/>
-      <line x1="580" y1="268" x2="640" y2="320" stroke="#06b6d4" stroke-width="1" stroke-dasharray="4,2"/>
-      <line x1="630" y1="268" x2="870" y2="320" stroke="#06b6d4" stroke-width="1" stroke-dasharray="4,2"/>
+      <rect x="770" y="388" width="200" height="70" rx="10" fill="#0a1a15" stroke="#06b6d4" stroke-width="1.5"/>
+      <text x="870" y="413" text-anchor="middle" fill="#06b6d4" font-size="12" font-weight="700">github-mcp-remote</text>
+      <text x="870" y="430" text-anchor="middle" fill="#9ca3af" font-size="9">create_issue, create_pull_request</text>
+      <text x="870" y="443" text-anchor="middle" fill="#9ca3af" font-size="9">list_branches, read_file</text>
 
       <!-- ============ ROW 4: Observability ============ -->
-      <text x="530" y="428" text-anchor="middle" fill="#9ca3af" font-size="11" font-weight="600" letter-spacing="0.08em">OBSERVABILITY</text>
+      <text x="530" y="498" text-anchor="middle" fill="#9ca3af" font-size="11" font-weight="600" letter-spacing="0.08em">OBSERVABILITY</text>
 
       <!-- OTel Collector -->
-      <rect x="310" y="440" width="200" height="44" rx="8" fill="#111827" stroke="#374151" stroke-width="1"/>
-      <text x="410" y="460" text-anchor="middle" fill="#e5e7eb" font-size="11" font-weight="600">OTel Collector</text>
-      <text x="410" y="474" text-anchor="middle" fill="#9ca3af" font-size="9">Langfuse + ClickHouse dual-export</text>
+      <rect x="310" y="510" width="200" height="44" rx="8" fill="#111827" stroke="#374151" stroke-width="1"/>
+      <text x="410" y="530" text-anchor="middle" fill="#e5e7eb" font-size="11" font-weight="600">OTel Collector</text>
+      <text x="410" y="544" text-anchor="middle" fill="#9ca3af" font-size="9">Langfuse + ClickHouse dual-export</text>
 
       <!-- Solo Enterprise UI -->
-      <rect x="540" y="440" width="200" height="44" rx="8" fill="#111827" stroke="#374151" stroke-width="1"/>
-      <text x="640" y="460" text-anchor="middle" fill="#e5e7eb" font-size="11" font-weight="600">Solo Enterprise UI</text>
-      <text x="640" y="474" text-anchor="middle" fill="#9ca3af" font-size="9">AgentOps dashboard + traces</text>
+      <rect x="540" y="510" width="200" height="44" rx="8" fill="#111827" stroke="#374151" stroke-width="1"/>
+      <text x="640" y="530" text-anchor="middle" fill="#e5e7eb" font-size="11" font-weight="600">Solo Enterprise UI</text>
+      <text x="640" y="544" text-anchor="middle" fill="#9ca3af" font-size="9">AgentOps dashboard + traces</text>
 
       <!-- Arrow: Agent -> OTel -->
-      <line x1="480" y1="215" x2="410" y2="440" stroke="#374151" stroke-width="1" stroke-dasharray="4,3"/>
+      <line x1="480" y1="215" x2="410" y2="510" stroke="#374151" stroke-width="1" stroke-dasharray="4,3"/>
 
       <!-- ============ ROW 5: Kubernetes Cluster ============ -->
-      <text x="530" y="520" text-anchor="middle" fill="#9ca3af" font-size="11" font-weight="600" letter-spacing="0.08em">KUBERNETES CLUSTER &middot; ISTIO AMBIENT MESH</text>
+      <text x="530" y="590" text-anchor="middle" fill="#9ca3af" font-size="11" font-weight="600" letter-spacing="0.08em">KUBERNETES CLUSTER &middot; ISTIO AMBIENT MESH</text>
 
       <!-- Cluster background -->
-      <rect x="60" y="532" width="940" height="170" rx="14" fill="none" stroke="#10b981" stroke-width="1" stroke-dasharray="8,4"/>
+      <rect x="60" y="602" width="940" height="170" rx="14" fill="none" stroke="#10b981" stroke-width="1" stroke-dasharray="8,4"/>
 
       <!-- finance-payments -->
-      <rect x="90" y="552" width="260" height="130" rx="10" fill="#0a1a15" stroke="#10b981" stroke-width="1.5"/>
-      <text x="220" y="572" text-anchor="middle" fill="#10b981" font-size="12" font-weight="700">finance-payments</text>
+      <rect x="90" y="622" width="260" height="130" rx="10" fill="#0a1a15" stroke="#10b981" stroke-width="1.5"/>
+      <text x="220" y="642" text-anchor="middle" fill="#10b981" font-size="12" font-weight="700">finance-payments</text>
 
-      <rect x="110" y="584" width="100" height="32" rx="6" fill="#111827" stroke="#374151" stroke-width="1"/>
-      <text x="160" y="604" text-anchor="middle" fill="#e5e7eb" font-size="10">payment-svc</text>
+      <rect x="110" y="654" width="100" height="32" rx="6" fill="#111827" stroke="#374151" stroke-width="1"/>
+      <text x="160" y="674" text-anchor="middle" fill="#e5e7eb" font-size="10">payment-svc</text>
 
-      <rect x="230" y="584" width="100" height="32" rx="6" fill="#111827" stroke="#374151" stroke-width="1"/>
-      <text x="280" y="604" text-anchor="middle" fill="#e5e7eb" font-size="10">payment-vs</text>
+      <rect x="230" y="654" width="100" height="32" rx="6" fill="#111827" stroke="#374151" stroke-width="1"/>
+      <text x="280" y="674" text-anchor="middle" fill="#e5e7eb" font-size="10">payment-vs</text>
 
       <!-- Chaos targets -->
-      <rect x="110" y="624" width="100" height="24" rx="4" fill="rgba(239,68,68,0.1)" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,2"/>
-      <text x="160" y="640" text-anchor="middle" fill="#ef4444" font-size="9">chaos: crash</text>
+      <rect x="110" y="694" width="100" height="24" rx="4" fill="rgba(239,68,68,0.1)" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,2"/>
+      <text x="160" y="710" text-anchor="middle" fill="#ef4444" font-size="9">chaos: crash</text>
 
-      <rect x="230" y="624" width="100" height="24" rx="4" fill="rgba(239,68,68,0.1)" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,2"/>
-      <text x="280" y="640" text-anchor="middle" fill="#ef4444" font-size="9">chaos: istio</text>
+      <rect x="230" y="694" width="100" height="24" rx="4" fill="rgba(239,68,68,0.1)" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,2"/>
+      <text x="280" y="710" text-anchor="middle" fill="#ef4444" font-size="9">chaos: istio</text>
 
       <!-- risk-management -->
-      <rect x="380" y="552" width="260" height="130" rx="10" fill="#0a1a15" stroke="#10b981" stroke-width="1.5"/>
-      <text x="510" y="572" text-anchor="middle" fill="#10b981" font-size="12" font-weight="700">risk-management</text>
+      <rect x="380" y="622" width="260" height="130" rx="10" fill="#0a1a15" stroke="#10b981" stroke-width="1.5"/>
+      <text x="510" y="642" text-anchor="middle" fill="#10b981" font-size="12" font-weight="700">risk-management</text>
 
-      <rect x="400" y="584" width="90" height="32" rx="6" fill="#111827" stroke="#374151" stroke-width="1"/>
-      <text x="445" y="604" text-anchor="middle" fill="#e5e7eb" font-size="10">risk-api x3</text>
+      <rect x="400" y="654" width="90" height="32" rx="6" fill="#111827" stroke="#374151" stroke-width="1"/>
+      <text x="445" y="674" text-anchor="middle" fill="#e5e7eb" font-size="10">risk-api x3</text>
 
-      <rect x="510" y="584" width="110" height="32" rx="6" fill="#111827" stroke="#374151" stroke-width="1"/>
-      <text x="565" y="599" text-anchor="middle" fill="#e5e7eb" font-size="10">market-data</text>
-      <text x="565" y="611" text-anchor="middle" fill="#9ca3af" font-size="8">stateful + PVC</text>
+      <rect x="510" y="654" width="110" height="32" rx="6" fill="#111827" stroke="#374151" stroke-width="1"/>
+      <text x="565" y="669" text-anchor="middle" fill="#e5e7eb" font-size="10">market-data</text>
+      <text x="565" y="681" text-anchor="middle" fill="#9ca3af" font-size="8">stateful + PVC</text>
 
-      <rect x="400" y="624" width="90" height="24" rx="4" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1"/>
-      <text x="445" y="640" text-anchor="middle" fill="#10b981" font-size="9">stateless</text>
+      <rect x="400" y="694" width="90" height="24" rx="4" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1"/>
+      <text x="445" y="710" text-anchor="middle" fill="#10b981" font-size="9">stateless</text>
 
-      <rect x="510" y="624" width="110" height="24" rx="4" fill="rgba(245,158,11,0.1)" stroke="#f59e0b" stroke-width="1"/>
-      <text x="565" y="640" text-anchor="middle" fill="#f59e0b" font-size="9">not migratable</text>
+      <rect x="510" y="694" width="110" height="24" rx="4" fill="rgba(245,158,11,0.1)" stroke="#f59e0b" stroke-width="1"/>
+      <text x="565" y="710" text-anchor="middle" fill="#f59e0b" font-size="9">not migratable</text>
 
       <!-- compliance-ops -->
-      <rect x="670" y="552" width="260" height="130" rx="10" fill="#0a1a15" stroke="#10b981" stroke-width="1.5"/>
-      <text x="800" y="572" text-anchor="middle" fill="#10b981" font-size="12" font-weight="700">compliance-ops</text>
+      <rect x="670" y="622" width="260" height="130" rx="10" fill="#0a1a15" stroke="#10b981" stroke-width="1.5"/>
+      <text x="800" y="642" text-anchor="middle" fill="#10b981" font-size="12" font-weight="700">compliance-ops</text>
 
-      <rect x="700" y="584" width="120" height="32" rx="6" fill="#111827" stroke="#374151" stroke-width="1"/>
-      <text x="760" y="604" text-anchor="middle" fill="#e5e7eb" font-size="10">compliance x2</text>
+      <rect x="700" y="654" width="120" height="32" rx="6" fill="#111827" stroke="#374151" stroke-width="1"/>
+      <text x="760" y="674" text-anchor="middle" fill="#e5e7eb" font-size="10">compliance x2</text>
 
-      <rect x="700" y="624" width="120" height="24" rx="4" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1"/>
-      <text x="760" y="640" text-anchor="middle" fill="#10b981" font-size="9">stateless</text>
+      <rect x="700" y="694" width="120" height="24" rx="4" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1"/>
+      <text x="760" y="710" text-anchor="middle" fill="#10b981" font-size="9">stateless</text>
 
       <!-- Arrows: Tools -> Cluster -->
-      <line x1="180" y1="390" x2="220" y2="552" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow-green)"/>
-      <line x1="410" y1="390" x2="410" y2="440" stroke="#374151" stroke-width="1" stroke-dasharray="4,3"/>
+      <line x1="180" y1="458" x2="220" y2="622" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow-green)"/>
 
       <!-- Chaos arrow -->
-      <line x1="850" y1="210" x2="850" y2="530" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="5,3"/>
-      <line x1="850" y1="530" x2="220" y2="552" stroke="#ef4444" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#arrow-red)"/>
+      <line x1="850" y1="210" x2="850" y2="600" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <line x1="850" y1="600" x2="220" y2="622" stroke="#ef4444" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#arrow-red)"/>
 
     </svg>
   </div>
