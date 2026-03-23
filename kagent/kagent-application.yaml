@@ -43,6 +43,7 @@ spec:
         agents:
           k8s-agent:
             enabled: true
+            modelConfig: claude-model-config
           kgateway-agent:
             enabled: true
           helm-agent:
