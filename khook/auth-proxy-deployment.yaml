@@ -1,0 +1,119 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: khook-auth-proxy
+  namespace: kagent
+  labels:
+    app: khook-auth-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: khook-auth-proxy
+  template:
+    metadata:
+      labels:
+        app: khook-auth-proxy
+    spec:
+      containers:
+      - name: proxy
+        image: python:3.12-slim
+        command: ["python3", "/app/proxy.py"]
+        ports:
+        - name: proxy
+          containerPort: 8083
+        - name: health
+          containerPort: 8084
+        env:
+        # --- Upstream (kagent-controller) ---
+        - name: UPSTREAM_URL
+          value: "http://kagent-controller.kagent.svc.cluster.local:8083"
+        # --- OIDC Configuration ---
+        # Option A: Direct token URL (if you know it)
+        # - name: IDP_TOKEN_URL
+        #   value: "http://solo-enterprise-ui.kagent:8080/idp/token"
+        # Option B: Discovery from issuer (auto-discovers token endpoint)
+        - name: IDP_ISSUER
+          valueFrom:
+            configMapKeyRef:
+              name: khook-auth-proxy-config
+              key: idp-issuer
+        # --- Client credentials ---
+        - name: CLIENT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: khook-auth-proxy-config
+              key: client-id
+        - name: CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: khook-auth-proxy-oidc
+              key: client-secret
+        # --- Grant type: client_credentials (production) or password (auto IDP) ---
+        - name: GRANT_TYPE
+          valueFrom:
+            configMapKeyRef:
+              name: khook-auth-proxy-config
+              key: grant-type
+        # --- For password grant (auto IDP only) ---
+        - name: IDP_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: khook-auth-proxy-config
+              key: idp-username
+              optional: true
+        - name: IDP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: khook-auth-proxy-oidc
+              key: idp-password
+              optional: true
+        # --- User identity injected into X-User-ID header ---
+        - name: USER_ID
+          valueFrom:
+            configMapKeyRef:
+              name: khook-auth-proxy-config
+              key: user-id
+        volumeMounts:
+        - name: script
+          mountPath: /app
+          readOnly: true
+        resources:
+          requests:
+            cpu: 25m
+            memory: 32Mi
+          limits:
+            cpu: 100m
+            memory: 64Mi
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8084
+          initialDelaySeconds: 3
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8084
+          initialDelaySeconds: 5
+          periodSeconds: 15
+      volumes:
+      - name: script
+        configMap:
+          name: khook-auth-proxy-script
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: khook-auth-proxy
+  namespace: kagent
+  labels:
+    app: khook-auth-proxy
+spec:
+  selector:
+    app: khook-auth-proxy
+  ports:
+  - port: 8083
+    targetPort: 8083
+    protocol: TCP
+    name: proxy

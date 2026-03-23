@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: khook-auth-proxy-config
+  namespace: kagent
+data:
+  # ---------------------------------------------------------------
+  # OIDC Configuration for khook-auth-proxy
+  # ---------------------------------------------------------------
+  # The proxy obtains tokens from the IDP and injects them into
+  # requests before forwarding to kagent-controller.
+  #
+  # For AUTO IDP (dev/testing):
+  #   grant-type: password
+  #   idp-issuer: <auto IDP issuer URL from solo-enterprise-ui>
+  #   idp-username: admin
+  #   + set idp-password in the khook-auth-proxy-oidc secret
+  #
+  # For Production OIDC (Okta, Keycloak, Entra ID):
+  #   grant-type: client_credentials
+  #   idp-issuer: https://your-idp.example.com/realms/kagent
+  #   client-id: kagent-backend
+  #   + set client-secret in the khook-auth-proxy-oidc secret
+  # ---------------------------------------------------------------
+
+  # OIDC issuer URL — used for .well-known/openid-configuration discovery
+  # For auto IDP: check your solo-enterprise-ui pod for the issuer URL
+  # Example: http://solo-enterprise-ui.kagent.svc.cluster.local:8080
+  idp-issuer: ""
+
+  # OAuth2 client ID (backend/confidential client)
+  client-id: "kagent-enterprise"
+
+  # Grant type: "client_credentials" (production) or "password" (auto IDP)
+  grant-type: "client_credentials"
+
+  # Username for password grant (auto IDP only)
+  idp-username: "admin"
+
+  # Identity injected as X-User-ID header on upstream requests
+  user-id: "admin@kagent.dev"

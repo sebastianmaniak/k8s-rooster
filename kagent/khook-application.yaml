@@ -15,7 +15,9 @@ spec:
     helm:
       valuesObject:
         kagent:
-          apiUrl: http://kagent-controller.kagent.svc.cluster.local:8083
+          # Route through auth proxy instead of directly to kagent-controller
+          # The proxy injects OIDC tokens before forwarding to the controller
+          apiUrl: http://khook-auth-proxy.kagent.svc.cluster.local:8083
           userId: admin@kagent.dev
   syncPolicy:
     automated:
