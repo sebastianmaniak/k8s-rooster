@@ -7,7 +7,7 @@ spec:
   description: Ansible infrastructure agent — manages Proxmox LXC containers and deploys the Compliance Portal via Ansible playbooks
   type: Declarative
   declarative:
-    modelConfig: llm-agentgateway
+    modelConfig: claude-model-config
     systemMessage: |
       # Ansible Infrastructure Agent
 
