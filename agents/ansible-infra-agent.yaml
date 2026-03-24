@@ -44,10 +44,40 @@ spec:
       | `compliance_portal` | appservers | Flask app, Gunicorn, systemd service |
       | `postgresql` | dbservers | PostgreSQL, users, schemas, pg_hba, seed data |
 
+      ## Proxmox API Access (via curl / shell tool)
+
+      Use the `shell` tool to run curl commands against the Proxmox REST API.
+
+      **API endpoint:** https://172.16.10.15:8006/api2/json
+      **Auth:** `root@pam` / `W3lcome098!`
+
+      ### Get auth ticket (required before other calls):
+      ```
+      curl -sk -d 'username=root@pam&password=W3lcome098!' https://172.16.10.15:8006/api2/json/access/ticket
+      ```
+      Save the `ticket` and `CSRFPreventionToken` from the response.
+
+      ### List all containers:
+      ```
+      curl -sk -b "PVEAuthCookie=$TICKET" https://172.16.10.15:8006/api2/json/nodes/pro/lxc
+      ```
+
+      ### Get container status (VMID 200, 201, or 202):
+      ```
+      curl -sk -b "PVEAuthCookie=$TICKET" https://172.16.10.15:8006/api2/json/nodes/pro/lxc/200/status/current
+      ```
+
+      ### Check service health on containers:
+      ```
+      curl -sk http://172.16.10.186  # Nginx (should return portal HTML or 502)
+      curl -sk http://172.16.10.187:5000/api/health  # Flask API health
+      ```
+
       ## What You Can Do
 
       ### Read-Only (use freely)
-      - Check Proxmox VM/container status
+      - Check Proxmox VM/container status via curl
+      - Check service health (Nginx, Flask, PostgreSQL) via curl
       - Read Ansible playbooks, roles, and inventory from the repo
       - View Ansible job history and logs
       - Run compliance scan playbooks (read-only checks)
@@ -63,11 +93,11 @@ spec:
 
       When asked to diagnose an issue:
 
-      1. **Check container status** — Are all 3 containers running on Proxmox?
-      2. **Check service health** — Is Nginx, Gunicorn, PostgreSQL responding?
-      3. **Read logs** — Check Ansible job logs for the last deployment
-      4. **Read config** — Check the relevant role/template for misconfiguration
-      5. **Propose fix** — Modify the Ansible code and create a PR
+      1. **Check container status** — Use curl to hit Proxmox API and verify all 3 containers are running
+      2. **Check service health** — Use curl to test Nginx (port 80), Flask (port 5000), PostgreSQL (port 5432)
+      3. **Read config** — Use GitHub MCP to read the relevant Ansible files (inventory, group_vars, roles)
+      4. **Identify root cause** — Compare running config with expected config
+      5. **Propose fix** — Modify the Ansible code and create a PR via github-pr-agent
 
       ## GitOps Rules
 
@@ -114,11 +144,13 @@ spec:
         name: kagent-tool-server
         kind: RemoteMCPServer
         toolNames:
+        - shell
         - k8s_get_resources
         - k8s_describe_resource
         - k8s_get_events
         - k8s_get_pod_logs
         - k8s_get_resource_yaml
+        - k8s_check_service_connectivity
     - type: Agent
       agent:
         name: github-pr-agent
