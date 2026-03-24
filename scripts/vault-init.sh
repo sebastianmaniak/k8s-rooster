@@ -157,7 +157,7 @@ kubectl -n "$VAULT_NS" exec "$VAULT_POD" -- \
 echo "  LLM provider API keys stored."
 
 # ── Write GitHub PAT ──────────────────────────────────────────────────────────
-echo "[7/9] Writing GitHub PAT to secret/data/github..."
+echo "[7/10] Writing GitHub PAT to secret/data/github..."
 kubectl -n "$VAULT_NS" exec "$VAULT_POD" -- \
   env VAULT_TOKEN="$ROOT_TOKEN" \
   vault kv put secret/github \
@@ -165,7 +165,7 @@ kubectl -n "$VAULT_NS" exec "$VAULT_POD" -- \
 echo "  GitHub PAT stored."
 
 # ── Write Slack credentials (optional) ────────────────────────────────────────
-echo "[8/9] Writing Slack credentials to secret/data/slack..."
+echo "[8/10] Writing Slack credentials to secret/data/slack..."
 if [[ -n "$SLACK_BOT_TOKEN" && -n "$SLACK_APP_TOKEN" ]]; then
   kubectl -n "$VAULT_NS" exec "$VAULT_POD" -- \
     env VAULT_TOKEN="$ROOT_TOKEN" \
@@ -179,8 +179,16 @@ else
   echo "  Skipped — slack_bot_token / slack_app_token not in secrets file."
 fi
 
+# ── Write Vault MCP token for vault-agent ──────────────────────────────────────
+echo "[9/10] Writing Vault MCP token to secret/data/vault/mcp..."
+kubectl -n "$VAULT_NS" exec "$VAULT_POD" -- \
+  env VAULT_TOKEN="$ROOT_TOKEN" \
+  vault kv put secret/vault/mcp \
+    token="$ROOT_TOKEN"
+echo "  Vault MCP token stored (vault-agent will use this to manage Vault)."
+
 # ── Create Vault token secret for External Secrets Operator ──────────────────
-echo "[9/9] Creating Vault token K8s secret for External Secrets Operator..."
+echo "[10/10] Creating Vault token K8s secret for External Secrets Operator..."
 kubectl create namespace "$ESO_NS" 2>/dev/null || true
 kubectl -n "$ESO_NS" create secret generic vault-token \
   --from-literal=token="$ROOT_TOKEN" \
@@ -199,6 +207,7 @@ echo "   - secret/data/f5/bigip    (host, username, password)"
 echo "   - secret/data/llm         (anthropic-api-key, openai-api-key, xai-api-key)"
 echo "   - secret/data/github      (personal-access-token)"
 echo "   - secret/data/slack       (SLACK_BOT_TOKEN, SLACK_APP_TOKEN, SLACK_CHANNEL_IDS, SLACK_TEAM_ID)"
+echo "   - secret/data/vault/mcp   (token — for vault-agent MCP server)"
 echo ""
 echo " External Secrets Operator will sync these to K8s secrets"
 echo " in agentgateway-system and kagent namespaces."

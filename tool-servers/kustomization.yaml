@@ -7,6 +7,8 @@ resources:
   - f5-wrapper-deployment.yaml
   - fortigate-mcp.yaml
   - fortigate-mcp-deployment.yaml
+  - vault-mcp.yaml
+  - vault-mcp-deployment.yaml
 
 commonLabels:
   app.kubernetes.io/name: kagent-tool-servers
