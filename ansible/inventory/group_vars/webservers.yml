@@ -1,16 +1,16 @@
 ---
-# Nginx reverse proxy configuration
-
+# Nginx tuning
 nginx_worker_processes: 1
 nginx_worker_connections: 256
 
-# Upstream backend — resolved from container_ips.yml
-nginx_upstream_host: "{{ compliance_app_ip }}"
-nginx_upstream_port: 5000
+# Compliance portal upstream backend
+# Prefer setting these rather than hardcoding IPs in templates.
+# Defaults are handled in the template, but we set a sensible inventory-based value here.
+compliance_backend_host: "{{ hostvars[groups['appservers'][0]].ansible_host | default(groups['appservers'][0]) }}"
+compliance_backend_port: 8000
+
+# Backwards compatibility (older templates/tasks may still reference these)
+nginx_upstream_host: "{{ compliance_backend_host }}"
+nginx_upstream_port: "{{ compliance_backend_port }}"
 
 # TLS (self-signed for demo)
-nginx_ssl_enabled: false
-
-# Access log
-nginx_access_log: /var/log/nginx/compliance-portal.access.log
-nginx_error_log: /var/log/nginx/compliance-portal.error.log
