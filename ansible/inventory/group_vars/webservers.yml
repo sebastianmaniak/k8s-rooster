@@ -1,16 +1,7 @@
 ---
-# Nginx reverse proxy configuration
+# Nginx reverse proxy settings
 
-nginx_worker_processes: 1
-nginx_worker_connections: 256
-
-# Upstream backend
-nginx_upstream_host: "172.16.10.99"
-nginx_upstream_port: 5000
-
-# TLS (self-signed for demo)
-nginx_ssl_enabled: false
-
-# Access log
-nginx_access_log: /var/log/nginx/compliance-portal.access.log
-nginx_error_log: /var/log/nginx/compliance-portal.error.log
+# Explicit backend target (Flask/Gunicorn)
+# Set this to the current DHCP-assigned IP of compliance-app (VMID 201)
+compliance_backend_host: 172.16.10.187
+compliance_backend_port: 5000
