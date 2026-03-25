@@ -19,6 +19,9 @@ spec:
           # The proxy injects OIDC tokens before forwarding to the controller
           apiUrl: http://khook-auth-proxy.kagent.svc.cluster.local:8083
           userId: admin@kagent.dev
+          # A2A agent calls stream responses and can take minutes to complete
+          # Default 30s is too short — causes BrokenPipeError in auth proxy
+          timeout: "600s"
   syncPolicy:
     automated:
       prune: true
