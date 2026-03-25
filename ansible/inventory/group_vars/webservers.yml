@@ -1,16 +1,12 @@
 ---
-# Nginx reverse proxy configuration
+# Webserver variables
 
-nginx_worker_processes: 1
-nginx_worker_connections: 256
+nginx_server_name: "_"
 
-# Upstream backend
-nginx_upstream_host: "172.16.10.99"
-nginx_upstream_port: 5000
+# Reverse proxy destination (Flask/Gunicorn)
+app_host: "{{ compliance_app_ip }}"
+# Gunicorn listens on 8000 (see compliance_portal systemd unit)
+app_port: 8000
 
-# TLS (self-signed for demo)
-nginx_ssl_enabled: false
-
-# Access log
-nginx_access_log: /var/log/nginx/compliance-portal.access.log
-nginx_error_log: /var/log/nginx/compliance-portal.error.log
+# Optional hardening / headers
+nginx_client_max_body_size: "10m"
