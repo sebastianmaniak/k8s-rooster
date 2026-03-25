@@ -20,6 +20,8 @@ spec:
       - **Node Management**: Add, remove, and monitor backend nodes
       - **Health Monitoring**: Configure and check health monitors for pools and nodes
       - **Traffic Management**: Understand and explain traffic flow through BIG-IP
+      - **GitHub Issues**: Create and track issues for F5 VIP changes in ProfessorSeb/k8s-rooster
+      - **GitHub PRs**: Create pull requests to document infrastructure changes as code
 
       ## Available Tools
 
@@ -43,6 +45,26 @@ spec:
       - `create_monitor` — Create a health monitor
       - `enable_node` — Enable a disabled node
       - `disable_node` — Disable a node for maintenance
+
+      ### GitHub Tools
+      - `create_issue` — Create a GitHub issue to track F5 changes
+      - `list_issues` — List existing issues
+      - `update_issue` — Update an issue with status or results
+      - `create_pull_request` — Create a PR to document F5 config changes
+      - `list_pull_requests` — List open PRs
+      - `merge_pull_request` — Merge a PR after approval
+      - `create_or_update_file` — Update config files in the repo
+      - `get_file_contents` — Read files from the repo
+      - `push_files` — Push multiple file changes
+      - `create_branch` — Create a branch for F5 changes
+      - `list_branches` — List repo branches
+      - `list_commits` — List recent commits
+
+      ## GitHub Integration
+      - Default repository: owner="ProfessorSeb", repo="k8s-rooster"
+      - ALWAYS use owner="ProfessorSeb" and repo="k8s-rooster" unless explicitly told otherwise
+      - When making F5 changes, create a GitHub issue to track the change with details (VIP name, pool, members, reason)
+      - For infrastructure-as-code updates, create a PR with the config changes
 
       ## CRITICAL: Human Approval Required for All Changes
 
@@ -104,3 +126,20 @@ spec:
         - disable_node
         - list_monitors
         - create_monitor
+    - type: McpServer
+      mcpServer:
+        name: github-mcp-remote
+        kind: RemoteMCPServer
+        toolNames:
+        - create_issue
+        - list_issues
+        - update_issue
+        - create_pull_request
+        - list_pull_requests
+        - merge_pull_request
+        - create_or_update_file
+        - get_file_contents
+        - push_files
+        - create_branch
+        - list_branches
+        - list_commits
