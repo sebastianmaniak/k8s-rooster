@@ -36,11 +36,6 @@
     <div class="hero-badge">CNCF Sandbox Project</div>
     <h1><span>kagent</span> Demo Platform</h1>
     <p>AI-powered Kubernetes operations. Crash diagnosis, migration planning, Istio ambient mesh troubleshooting, capacity forecasting, and Ansible infrastructure management — driven by an orchestrator agent with specialist sub-agents.</p>
-    <div class="hero-buttons">
-      <a href="architecture.html" class="hero-btn primary">Architecture Diagram &rarr;</a>
-      <a href="khook-auth-proxy.html" class="hero-btn">khook Auth Proxy &rarr;</a>
-      <a href="khook-diagram.html" class="hero-btn">khook Flow Diagram &rarr;</a>
-    </div>
   </div>
 
   <!-- What is kagent -->
@@ -88,91 +83,195 @@
   <section>
     <div class="container">
       <h2>What Can These <span>Agents Do</span>?</h2>
-      <p>Real-world platform engineering use cases powered by AI agents. Each use case combines one or more agents working together.</p>
+      <p>Real-world platform engineering use cases organized by domain. Each category showcases agents working together to solve problems across Kubernetes, networking, security, and cloud infrastructure.</p>
 
-      <div class="features" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
-
-        <div class="feature" style="border-left: 3px solid var(--accent-light);">
-          <h3>Automated Incident Response</h3>
-          <p>A pod crashes at 3 AM. <strong>khook</strong> detects the restart, triggers <strong>compliance-incident-agent</strong> which reads logs, identifies the root cause (e.g. database connection timeout), and delegates to <strong>github-issues-agent</strong> to file a detailed incident report — all without a human touching a keyboard.</p>
-          <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
-            <strong>Agents:</strong> khook &rarr; compliance-incident-agent &rarr; github-issues-agent
+      <!-- Kubernetes -->
+      <div style="margin-top: 40px;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(99, 102, 241, 0.12); display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">&#x2638;</div>
+          <div>
+            <h3 style="margin: 0; font-size: 1.2rem;">Kubernetes</h3>
+            <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">Cluster operations, workload management, incident response, and observability</p>
           </div>
         </div>
-
-        <div class="feature" style="border-left: 3px solid var(--cyan);">
-          <h3>Live Namespace Migration</h3>
-          <p>Move a running application from one namespace to another with zero downtime. <strong>k8s-agent</strong> exports all resources (Deployments, Services, ConfigMaps), recreates them in the target namespace, verifies health, and cleans up the source — with human approval at each step.</p>
-          <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
-            <strong>Agents:</strong> k8s-agent (HITL)
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
+          <a href="k8s-agent.html" style="text-decoration: none;"><span class="tag tag-cyan">k8s-agent</span></a>
+          <a href="slackbot-agent.html" style="text-decoration: none;"><span class="tag" style="background: rgba(167,139,250,0.12); color: #a78bfa;">slackbot-k8s-agent</span></a>
+          <span class="tag tag-green">compliance-incident-agent</span>
+          <a href="github-issues-agent.html" style="text-decoration: none;"><span class="tag tag-yellow">github-issues-agent</span></a>
+          <a href="github-pr-agent.html" style="text-decoration: none;"><span class="tag tag-yellow">github-pr-agent</span></a>
+        </div>
+        <div class="features" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+          <div class="feature" style="border-left: 3px solid var(--accent-light);">
+            <h3>Automated Incident Response</h3>
+            <p>A pod crashes at 3 AM. <strong>khook</strong> detects the restart, triggers <strong>compliance-incident-agent</strong> which reads logs, identifies the root cause (e.g. database connection timeout), and delegates to <strong>github-issues-agent</strong> to file a detailed incident report &mdash; all without a human touching a keyboard.</p>
+            <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
+              <strong>Flow:</strong> khook &rarr; compliance-incident-agent &rarr; github-issues-agent
+            </div>
+          </div>
+          <div class="feature" style="border-left: 3px solid var(--accent-light);">
+            <h3>Live Namespace Migration</h3>
+            <p>Move a running application from one namespace to another with zero downtime. <strong>k8s-agent</strong> exports all resources (Deployments, Services, ConfigMaps), recreates them in the target namespace, verifies health, and cleans up the source &mdash; with human approval at each step.</p>
+            <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
+              <strong>Flow:</strong> k8s-agent (HITL)
+            </div>
+          </div>
+          <div class="feature" style="border-left: 3px solid var(--accent-light);">
+            <h3>Slack-Driven Cluster Ops</h3>
+            <p>Ask questions in Slack and get instant answers: <em>"Which pods are unhealthy?"</em> or <em>"What Helm releases are failing?"</em>. <strong>slackbot-k8s-agent</strong> queries the cluster and posts formatted reports directly to your channel.</p>
+            <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
+              <strong>Flow:</strong> slackbot-k8s-agent &rarr; Slack
+            </div>
+          </div>
+          <div class="feature" style="border-left: 3px solid var(--accent-light);">
+            <h3>Crash Loop Diagnosis</h3>
+            <p>A payment-service pod enters CrashLoopBackOff with a Java OOM buried in noisy logs. <strong>k8s-agent</strong> reads pod events, scans full log output, and surfaces the root cause &mdash; distinguishing the symptom (OOM kill) from the bug (NullPointerException at PaymentProcessor.java:314).</p>
+            <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
+              <strong>Flow:</strong> k8s-agent (read-only diagnosis)
+            </div>
           </div>
         </div>
-
-        <div class="feature" style="border-left: 3px solid var(--orange);">
-          <h3>End-to-End Service Exposure</h3>
-          <p>Deploy a new service and expose it through the F5 load balancer in one conversation. <strong>k8s-f5-agent</strong> checks the K8s deployment is healthy, grabs the NodePort, creates an F5 pool with health monitors, and binds a virtual server — full stack from pod to public VIP.</p>
-          <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
-            <strong>Agents:</strong> k8s-f5-agent (HITL)
-          </div>
-        </div>
-
-        <div class="feature" style="border-left: 3px solid var(--red);">
-          <h3>Firewall Policy Audit</h3>
-          <p>Ask <strong>fortigate-agent</strong> to audit all firewall policies and flag overly permissive rules (e.g. <code>srcaddr: all</code> with <code>action: accept</code>). It lists every policy, identifies violations of deny-by-default best practices, and can tighten rules with your approval.</p>
-          <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
-            <strong>Agents:</strong> fortigate-agent (HITL)
-          </div>
-        </div>
-
-        <div class="feature" style="border-left: 3px solid var(--green);">
-          <h3>Zero-Trust Network Policy from English</h3>
-          <p>Describe your security intent: <em>"Only frontend pods should reach the API on port 8080"</em>. <strong>cilium-crd-agent</strong> generates valid CiliumNetworkPolicy YAML with the correct selectors, ports, and L7 rules, then applies it after you review.</p>
-          <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
-            <strong>Agents:</strong> cilium-crd-agent (HITL)
-          </div>
-        </div>
-
-        <div class="feature" style="border-left: 3px solid #a78bfa;">
-          <h3>Infrastructure Fix via GitOps</h3>
-          <p>The Compliance Portal is returning 502. <strong>ansible-infra-agent</strong> reads the Ansible inventory from GitHub, spots the misconfigured upstream IP, and submits a PR via <strong>github-pr-agent</strong> to fix it — infrastructure-as-code with AI-driven remediation.</p>
-          <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
-            <strong>Agents:</strong> ansible-infra-agent &rarr; github-pr-agent
-          </div>
-        </div>
-
-        <div class="feature" style="border-left: 3px solid var(--yellow);">
-          <h3>Secrets &amp; Certificate Management</h3>
-          <p>Set up a full PKI chain in HashiCorp Vault: create a root CA, an intermediate CA, configure roles, and issue leaf certificates with proper SANs and TTLs. <strong>vault-agent</strong> masks all secret values and requires approval for every write.</p>
-          <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
-            <strong>Agents:</strong> vault-agent (HITL)
-          </div>
-        </div>
-
-        <div class="feature" style="border-left: 3px solid var(--accent-light);">
-          <h3>Istio Traffic Splitting &amp; Canary</h3>
-          <p>Route 10% of traffic to a new version of your service for canary testing. <strong>istio-agent</strong> creates VirtualService and DestinationRule resources, monitors proxy status, and can roll back instantly if errors spike.</p>
-          <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
-            <strong>Agents:</strong> istio-agent (HITL)
-          </div>
-        </div>
-
-        <div class="feature" style="border-left: 3px solid var(--cyan);">
-          <h3>Slack-Driven Cluster Ops</h3>
-          <p>Ask questions in Slack and get instant answers: <em>"Which pods are unhealthy?"</em> or <em>"What Helm releases are failing?"</em>. <strong>slackbot-k8s-agent</strong> queries the cluster and posts formatted reports directly to your channel.</p>
-          <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
-            <strong>Agents:</strong> slackbot-k8s-agent &rarr; Slack
-          </div>
-        </div>
-
-        <div class="feature" style="border-left: 3px solid var(--green);">
-          <h3>Gateway API Configuration</h3>
-          <p>Expose services through Kubernetes Gateway API with <strong>kgateway-agent</strong>. Create Gateway resources, configure HTTPRoutes with path-based routing, set up TLS, and manage traffic policies — all from natural language.</p>
-          <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
-            <strong>Agents:</strong> kgateway-agent (HITL)
-          </div>
-        </div>
-
       </div>
+
+      <!-- Networking -->
+      <div style="margin-top: 48px;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(6, 182, 212, 0.12); display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">&#x1f310;</div>
+          <div>
+            <h3 style="margin: 0; font-size: 1.2rem;">Networking</h3>
+            <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">Service mesh, load balancing, Gateway API, and traffic management</p>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
+          <a href="istio-agent.html" style="text-decoration: none;"><span class="tag tag-cyan">istio-agent</span></a>
+          <a href="f5-bigip-agent.html" style="text-decoration: none;"><span class="tag" style="background: rgba(249,115,22,0.12); color: #f97316;">f5-bigip-agent</span></a>
+          <a href="kgateway-agent.html" style="text-decoration: none;"><span class="tag tag-green">kgateway-agent</span></a>
+          <span class="tag" style="background: rgba(249,115,22,0.12); color: #f97316;">k8s-f5-agent</span>
+        </div>
+        <div class="features" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+          <div class="feature" style="border-left: 3px solid var(--cyan);">
+            <h3>Istio Traffic Splitting &amp; Canary</h3>
+            <p>Route 10% of traffic to a new version of your service for canary testing. <strong>istio-agent</strong> creates VirtualService and DestinationRule resources, monitors proxy status, and can roll back instantly if errors spike.</p>
+            <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
+              <strong>Flow:</strong> istio-agent (HITL)
+            </div>
+          </div>
+          <div class="feature" style="border-left: 3px solid var(--cyan);">
+            <h3>End-to-End Service Exposure</h3>
+            <p>Deploy a new service and expose it through the F5 load balancer in one conversation. <strong>k8s-f5-agent</strong> checks the K8s deployment is healthy, grabs the NodePort, creates an F5 pool with health monitors, and binds a virtual server &mdash; full stack from pod to public VIP.</p>
+            <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
+              <strong>Flow:</strong> k8s-f5-agent (HITL)
+            </div>
+          </div>
+          <div class="feature" style="border-left: 3px solid var(--cyan);">
+            <h3>Gateway API Configuration</h3>
+            <p>Expose services through Kubernetes Gateway API with <strong>kgateway-agent</strong>. Create Gateway resources, configure HTTPRoutes with path-based routing, set up TLS, and manage traffic policies &mdash; all from natural language.</p>
+            <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
+              <strong>Flow:</strong> kgateway-agent (HITL)
+            </div>
+          </div>
+          <div class="feature" style="border-left: 3px solid var(--cyan);">
+            <h3>Ambient Mesh Security Lockdown</h3>
+            <p>Istio ambient mesh protects all namespaces with ztunnel L4 encryption (no sidecars). When a STRICT PeerAuthentication + deny-all AuthorizationPolicy blocks traffic, <strong>istio-agent</strong> diagnoses the security policy misconfiguration and shows the fix.</p>
+            <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
+              <strong>Flow:</strong> istio-agent (diagnosis + HITL fix)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security -->
+      <div style="margin-top: 48px;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(239, 68, 68, 0.12); display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">&#x1f6e1;</div>
+          <div>
+            <h3 style="margin: 0; font-size: 1.2rem;">Security</h3>
+            <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">Firewall policies, network policies, secrets management, and PKI</p>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
+          <a href="fortigate-agent.html" style="text-decoration: none;"><span class="tag tag-red">fortigate-agent</span></a>
+          <a href="cilium-crd-agent.html" style="text-decoration: none;"><span class="tag tag-green">cilium-crd-agent</span></a>
+          <a href="vault-agent.html" style="text-decoration: none;"><span class="tag" style="background: rgba(6,182,212,0.12); color: #06b6d4;">vault-agent</span></a>
+        </div>
+        <div class="features" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+          <div class="feature" style="border-left: 3px solid var(--red);">
+            <h3>Firewall Policy Audit</h3>
+            <p>Ask <strong>fortigate-agent</strong> to audit all firewall policies and flag overly permissive rules (e.g. <code>srcaddr: all</code> with <code>action: accept</code>). It lists every policy, identifies violations of deny-by-default best practices, and can tighten rules with your approval.</p>
+            <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
+              <strong>Flow:</strong> fortigate-agent (HITL)
+            </div>
+          </div>
+          <div class="feature" style="border-left: 3px solid var(--red);">
+            <h3>Zero-Trust Network Policy</h3>
+            <p>Describe your security intent: <em>"Only frontend pods should reach the API on port 8080"</em>. <strong>cilium-crd-agent</strong> generates valid CiliumNetworkPolicy YAML with the correct selectors, ports, and L7 rules, then applies it after you review.</p>
+            <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
+              <strong>Flow:</strong> cilium-crd-agent (HITL)
+            </div>
+          </div>
+          <div class="feature" style="border-left: 3px solid var(--red);">
+            <h3>Secrets &amp; Certificate Management</h3>
+            <p>Set up a full PKI chain in HashiCorp Vault: create a root CA, an intermediate CA, configure roles, and issue leaf certificates with proper SANs and TTLs. <strong>vault-agent</strong> masks all secret values and requires approval for every write.</p>
+            <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
+              <strong>Flow:</strong> vault-agent (HITL)
+            </div>
+          </div>
+          <div class="feature" style="border-left: 3px solid var(--red);">
+            <h3>DNAT &amp; Port Forwarding</h3>
+            <p>Create destination NAT rules to forward external traffic to internal services. <strong>fortigate-agent</strong> configures VIP objects, binds them to firewall policies, and verifies the forwarding path &mdash; with full audit trail and human approval.</p>
+            <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
+              <strong>Flow:</strong> fortigate-agent (HITL)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cloud -->
+      <div style="margin-top: 48px;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(167, 139, 250, 0.12); display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">&#x2601;</div>
+          <div>
+            <h3 style="margin: 0; font-size: 1.2rem;">Cloud &amp; Infrastructure</h3>
+            <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">GitOps, Ansible automation, Proxmox, and infrastructure-as-code</p>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
+          <span class="tag" style="background: rgba(167,139,250,0.12); color: #a78bfa;">ansible-infra-agent</span>
+          <a href="github-pr-agent.html" style="text-decoration: none;"><span class="tag tag-yellow">github-pr-agent</span></a>
+          <a href="github-issues-agent.html" style="text-decoration: none;"><span class="tag tag-yellow">github-issues-agent</span></a>
+        </div>
+        <div class="features" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+          <div class="feature" style="border-left: 3px solid #a78bfa;">
+            <h3>Infrastructure Fix via GitOps</h3>
+            <p>The Compliance Portal is returning 502. <strong>ansible-infra-agent</strong> reads the Ansible inventory from GitHub, spots the misconfigured upstream IP, and submits a PR via <strong>github-pr-agent</strong> to fix it &mdash; infrastructure-as-code with AI-driven remediation.</p>
+            <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
+              <strong>Flow:</strong> ansible-infra-agent &rarr; github-pr-agent
+            </div>
+          </div>
+          <div class="feature" style="border-left: 3px solid #a78bfa;">
+            <h3>Proxmox LXC Provisioning</h3>
+            <p>Provision a 3-tier application stack on Proxmox LXC containers via Ansible. <strong>ansible-infra-agent</strong> manages the full lifecycle &mdash; create containers, deploy Nginx + Flask + PostgreSQL, configure networking, and run health checks.</p>
+            <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
+              <strong>Flow:</strong> ansible-infra-agent (Semaphore API)
+            </div>
+          </div>
+          <div class="feature" style="border-left: 3px solid #a78bfa;">
+            <h3>Automated PR Workflows</h3>
+            <p>Review pull requests, run Copilot code review, and fix issues automatically. <strong>github-pr-agent</strong> reads diffs, identifies problems, creates fix commits, and manages branch workflows &mdash; integrated with GitHub's native tooling.</p>
+            <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
+              <strong>Flow:</strong> github-pr-agent (AgentGateway LLM)
+            </div>
+          </div>
+          <div class="feature" style="border-left: 3px solid #a78bfa;">
+            <h3>Compliance Scanning &amp; Reporting</h3>
+            <p>Run compliance scans across infrastructure, generate reports, and automatically file GitHub issues for violations. <strong>ansible-infra-agent</strong> coordinates the scan and delegates issue tracking to <strong>github-issues-agent</strong>.</p>
+            <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
+              <strong>Flow:</strong> ansible-infra-agent &rarr; github-issues-agent
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
