@@ -321,10 +321,12 @@ YAML
 }
 
 cleanup_migrate() {
-    info "Cleaning up migration scenario..."
-    kubectl delete namespace apples 2>/dev/null || true
+    info "Resetting migration scenario..."
+    # Delete oranges (migration target) and recreate empty
     kubectl delete namespace oranges 2>/dev/null || true
-    info "Namespaces apples and oranges deleted"
+    kubectl delete namespace apples 2>/dev/null || true
+    # Rebuild fresh
+    setup_migrate
 }
 
 reset_all() {
