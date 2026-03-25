@@ -3,10 +3,9 @@
 
 nginx_server_name: "_"
 
-# Reverse proxy destination (Flask/Gunicorn)
-app_host: "{{ compliance_app_ip }}"
-# Gunicorn listens on 8000 (see compliance_portal systemd unit)
-app_port: 8000
+# Upstream backend — references container_ips.yml (compliance_app_ip: 172.16.10.187)
+nginx_upstream_host: "{{ compliance_app_ip }}"
+nginx_upstream_port: 5000
 
 # Optional hardening / headers
 nginx_client_max_body_size: "10m"
