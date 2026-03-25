@@ -1,5 +1,5 @@
 #!/bin/bash
-# kagent Bank Demo — Chaos Injection
+# kagent Demo Platform — Chaos Injection
 #
 # Introduces failures for kagent to diagnose live during the demo.
 # Run each scenario individually or all at once.

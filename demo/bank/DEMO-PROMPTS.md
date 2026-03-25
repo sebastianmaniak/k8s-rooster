@@ -1,6 +1,6 @@
-# kagent Bank Demo — Prompts Cheat Sheet
+# kagent Demo Platform — Prompts Cheat Sheet
 
-> Use the **bank-platform-agent** in kagent UI for all scenarios.
+> Use the **bank-platform-agent** in kagent UI for all scenarios (except Scenario 5 which uses **k8s-agent**).
 
 ---
 

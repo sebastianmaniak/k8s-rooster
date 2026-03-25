@@ -1,5 +1,5 @@
 #!/bin/bash
-# kagent Bank Demo Environment Setup
+# kagent Demo Platform — Environment Setup
 # Deploys everything in a HEALTHY state. Use chaos.sh to inject failures.
 #
 # Usage: ./setup.sh [apply|delete|status]
@@ -46,7 +46,7 @@ check_prerequisites() {
 }
 
 apply_demo() {
-    info "Deploying bank demo environment (healthy state)..."
+    info "Deploying demo platform environment (healthy state)..."
 
     # 1. Namespaces first
     kubectl apply -f "$SCRIPT_DIR/namespaces.yaml"
@@ -157,7 +157,7 @@ check_status() {
 }
 
 delete_demo() {
-    warn "Tearing down bank demo environment..."
+    warn "Tearing down demo platform environment..."
     kubectl delete -f "$SCRIPT_DIR/slack-bot-deployment.yaml" --ignore-not-found
     kubectl delete -f "$SCRIPT_DIR/slack-agent.yaml" --ignore-not-found
     kubectl delete -f "$SCRIPT_DIR/slack-mcp.yaml" --ignore-not-found
