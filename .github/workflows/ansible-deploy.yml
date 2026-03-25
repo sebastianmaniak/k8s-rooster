@@ -54,7 +54,7 @@ jobs:
 
       - name: Run playbook
         run: |
-          PLAYBOOK="${{ inputs.playbook || 'site.yml' }}"
+          PLAYBOOK="playbooks/${{ inputs.playbook || 'site.yml' }}"
           LIMIT="${{ inputs.limit }}"
 
           ARGS="-i inventory/hosts.yml ${PLAYBOOK}"
