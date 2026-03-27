@@ -10,6 +10,7 @@ resources:
   - enterprise-agentgateway-bridge.yaml
   - vault-mcp.yaml
   - vault-mcp-deployment.yaml
+  - moat-mcp.yaml
 
 commonLabels:
   app.kubernetes.io/name: kagent-tool-servers

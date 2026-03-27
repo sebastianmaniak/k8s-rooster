@@ -12,6 +12,7 @@ resources:
   - ansible-infra-agent.yaml
   - cilium-crd-agent.yaml
   - k8s-f5-agent.yaml
+  - moat-sandbox-coder.yaml
 
 commonLabels:
   app.kubernetes.io/name: kagent-agents
