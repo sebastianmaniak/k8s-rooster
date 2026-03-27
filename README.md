@@ -3,7 +3,7 @@
 > *"Talk to me, Goose."*
 > *"Goose is dead. I'm Rooster now. And I brought Kubernetes."*
 
-This repository contains Kubernetes configurations for the `maniak-rooster` Talos-based cluster, managed entirely via ArgoCD. It covers Longhorn storage, Solo AgentGateway (AI gateway), kagent Enterprise (AI agent platform), MCP tool servers, and supporting infrastructure.
+This repository contains Kubernetes configurations for the `maniak-rooster` Talos-based cluster, managed entirely via ArgoCD. It covers Longhorn storage, Solo AgentGateway (AI gateway), kagent Enterprise (AI agent platform), MCP tool servers, HashiCorp Vault, Istio service mesh, and supporting infrastructure.
 
 ## Repository Structure
 
@@ -12,12 +12,14 @@ k8s-rooster/
 ├── manifests/                    # ArgoCD app-of-apps (top-level Applications)
 │   ├── agentgateway/             # AgentGateway ArgoCD applications
 │   ├── kagent/                   # kagent ArgoCD applications (agents, tool servers, slack bot)
-│   └── longhorn/                 # Longhorn deployment
+│   └── vault/                    # Vault + external-secrets ArgoCD applications
 ├── gateways/                     # LLM gateway resources
 │   ├── shared/                   # Shared gateway, tracing params, otel-collector, Langfuse fan-out collector
 │   ├── anthropic/                # Anthropic backend + route
 │   ├── openai/                   # OpenAI backend + route
 │   ├── xai/                      # xAI backend + route + gateway + rate limiting
+│   ├── github/                   # GitHub backend + gateway + route
+│   ├── vertex-ai/                # Vertex AI backend + gateway + route
 │   ├── model-priority/           # OpenAI model failover with priority groups
 │   └── kustomization.yaml        # References shared/ + each provider as subdirs
 ├── mcp/                          # MCP server deployments + AgentGateway routing
@@ -25,23 +27,43 @@ k8s-rooster/
 │   ├── everything/               # Demo MCP server (deployment, service, backend, route)
 │   ├── github/                   # GitHub Copilot MCP (gateway, backend, routes)
 │   ├── slack/                    # Slack MCP server (gateway, deployment, service, backend, route)
-│   ├── excalidraw/               # Excalidraw MCP server
 │   └── kustomization.yaml        # References shared/ + each server as subdirs
 ├── policies/                     # AgentGateway policies (organized by category)
 │   ├── pii-protection.yaml
 │   ├── prompt-injection.yaml
 │   ├── credential-protection.yaml
 │   ├── elicitation.yaml
+│   ├── github-mcp-read-only-policy.yaml
+│   ├── github-mcp-safe-ops-policy.yaml
+│   ├── mcp-block-echo-getenv-policy.yaml
+│   ├── mcp-jwt-auth.yaml
+│   ├── mcp-jwt-auth-enterprise.yaml
+│   ├── mcp-tool-rbac.yaml
+│   ├── okta-jwks-service.yaml
 │   └── kustomization.yaml
-├── agents/                       # kagent Agent CRs ONLY
-│   ├── team-lead-agent.yaml
+├── agents/                       # kagent Agent CRs
+│   ├── k8s-agent.yaml
+│   ├── k8s-f5-agent.yaml
 │   ├── github-issues-agent.yaml
 │   ├── github-pr-agent.yaml
-│   ├── slackbot-k8s-agent.yaml
+│   ├── f5-bigip-agent.yaml
+│   ├── fortigate-agent.yaml
+│   ├── vault-agent.yaml
+│   ├── ansible-infra-agent.yaml
+│   ├── cilium-crd-agent.yaml
+│   ├── compliance-incident-agent.yaml
+│   ├── moat-sandbox-coder.yaml
 │   └── kustomization.yaml
 ├── tool-servers/                 # Remote MCP tool servers for kagent (via AgentGateway)
-│   ├── slack-mcp-remote.yaml
 │   ├── github-mcp-remote.yaml
+│   ├── f5-bigip-mcp.yaml
+│   ├── f5-wrapper-deployment.yaml
+│   ├── fortigate-mcp.yaml
+│   ├── fortigate-mcp-deployment.yaml
+│   ├── enterprise-agentgateway-bridge.yaml
+│   ├── vault-mcp.yaml
+│   ├── vault-mcp-deployment.yaml
+│   ├── moat-mcp.yaml
 │   └── kustomization.yaml
 ├── slack-bot/                    # Slack bot deployment + local MCPServer CR
 │   ├── deployment.yaml
@@ -55,12 +77,40 @@ k8s-rooster/
 │   ├── kagent-crds-application.yaml
 │   ├── kagent-mgmt-application.yaml
 │   ├── kagent-application.yaml
-│   ├── khook-application.yaml    # khook ArgoCD app (routes through auth proxy)
+│   ├── enterprise-agentgateway-application.yaml
+│   ├── enterprise-agentgateway-crds-application.yaml
+│   ├── khook-application.yaml
+│   ├── khook-crds-application.yaml
 │   └── kustomization.yaml
 ├── models/                       # Model configs (kagent ModelConfig CRs)
+├── vault/                        # HashiCorp Vault + External Secrets Operator
+│   ├── vault-application.yaml
+│   └── external-secrets-application.yaml
+├── external-secrets/             # ExternalSecret CRs (cluster secret store + per-namespace secrets)
+│   ├── cluster-secret-store.yaml
+│   ├── agentgateway-secrets.yaml
+│   ├── kagent-secrets.yaml
+│   ├── slack-secrets.yaml
+│   └── kustomization.yaml
+├── istio/                        # Istio service mesh ArgoCD applications
+│   ├── istio-base-application.yaml
+│   ├── istiod-application.yaml
+│   ├── istio-cni-application.yaml
+│   ├── ztunnel-application.yaml
+│   ├── kiali-application.yaml
+│   └── kustomization.yaml
+├── monitoring/                   # Monitoring stack
+│   └── prometheus-application.yaml
+├── demo/                         # Demo scenarios
+│   └── bank/                     # Bank platform demo (chaos, Istio, Prometheus, Slack)
+├── ansible/                      # Ansible playbooks + roles for infrastructure automation
+│   ├── inventory/
+│   ├── playbooks/
+│   └── roles/
 ├── archive/                      # Stale raw resource dumps (not referenced by ArgoCD)
 ├── scripts/                      # Utility scripts
-│   └── verify-langfuse.sh        # Verify Langfuse dual-export pipeline
+│   ├── verify-langfuse.sh        # Verify Langfuse dual-export pipeline
+│   └── vault-init.sh             # Vault initialization script
 ├── f5vip/                        # F5 BIG-IP VIP Terraform configs
 │   ├── main.tf                   # Virtual servers, pools, pool members, monitors
 │   ├── variables.tf              # BIG-IP connection + backend node variables
@@ -69,9 +119,15 @@ k8s-rooster/
 │   ├── versions.tf               # Terraform + provider version constraints
 │   ├── terraform.tfvars.example  # Example credentials file
 │   └── README.md                 # VIP assignment table + usage
-├── docs/                         # Reference examples and guides
+├── docs/                         # Reference documentation and agent HTML pages
 │   ├── langfuse-integration.md   # Langfuse setup tutorial + architecture
-│   └── khook-auth-proxy.html     # khook auth proxy documentation page
+│   ├── khook-auth-proxy.html     # khook auth proxy documentation page
+│   ├── architecture.html         # Architecture overview
+│   ├── DEPLOYMENT_GUIDE.md       # Deployment guide
+│   └── *.html                    # Per-agent documentation pages
+├── issues/                       # Known issues and bug tracking
+├── upgrades/                     # Upgrade notes and procedures
+├── .github/workflows/            # GitHub Actions (Ansible deploy, chaos, F5 Terraform)
 └── README.md
 ```
 
@@ -92,6 +148,9 @@ k8s-rooster/
 - **kagent Enterprise** (Solo/CNCF) — Kubernetes-native AI agent platform with MCP tool integration
 - **Consolidated Management UI** — Single `solo-enterprise-ui` in kagent namespace serves both kagent and AgentGateway products
 - **Telemetry** — Dual-export trace pipeline: AgentGateway → Langfuse OTel Collector (fan-out) → Langfuse + ClickHouse (Solo UI)
+- **HashiCorp Vault** — Secrets management with External Secrets Operator integration
+- **Istio** — Service mesh (ambient mode with ztunnel + CNI) + Kiali dashboard
+- **Prometheus** — Monitoring stack
 
 ### MCP Tool Flow (AgentGateway)
 
@@ -112,20 +171,19 @@ This allows kagent agents to use MCP tools that are fronted by AgentGateway, get
 | Application | Source Path | Namespace | Description |
 |---|---|---|---|
 | `kagent-apps` | `kagent/` | argocd | App-of-apps for kagent Helm charts |
-| `kagent-agents` | `agents/` | kagent | Agent CRs only |
-| `kagent-tool-servers` | `tool-servers/` | kagent | RemoteMCPServer CRs (via AgentGateway) |
+| `kagent-agents` | `agents/` | kagent | Agent CRs (k8s, f5, fortigate, vault, ansible, cilium, compliance, moat, etc.) |
+| `kagent-tool-servers` | `tool-servers/` | kagent | RemoteMCPServer CRs + tool deployments (via AgentGateway) |
 | `kagent-slack-bot` | `slack-bot/` | kagent | Slack bot deployment + MCPServer CR |
 | `kagent-models` | `models/` | kagent | Model configuration CRs |
-| `llm-gateways` | `gateways/` | agentgateway-system | LLM gateways (Anthropic, OpenAI, xAI) |
-| `openai-gateway` | `gateways/openai/` | agentgateway-system | OpenAI LLM gateway |
-| `anthropic-gateway` | `gateways/anthropic/` | agentgateway-system | Anthropic LLM gateway |
-| `xai-gateway` | `gateways/xai/` | agentgateway-system | xAI/Grok LLM gateway + rate limiting |
+| `llm-gateways` | `gateways/` | agentgateway-system | LLM gateways (Anthropic, OpenAI, xAI, GitHub, Vertex AI) |
 | `model-priority-gateway` | `gateways/model-priority/` | agentgateway-system | OpenAI model failover |
 | `mcp-servers` | `mcp/` | agentgateway-system | MCP server deployments + gateways |
 | `github-mcp-servers` | `mcp/github/` | agentgateway-system | GitHub MCP (standalone) |
 | `khook` | `kagent-dev/khook` (Helm) | kagent | K8s event watcher, triggers agents via A2A |
 | `khook-auth-proxy` | `khook/` | kagent | Auth proxy for khook → kagent-enterprise |
-| `agentgateway-policies` | `policies/` | agentgateway-system | Security policies |
+| `agentgateway-policies` | `policies/` | agentgateway-system | Security policies (PII, prompt injection, JWT auth, RBAC, etc.) |
+| `vault-apps` | `vault/` | argocd | HashiCorp Vault + External Secrets Operator |
+| `vault-external-secrets` | `external-secrets/` | various | ExternalSecret CRs (cluster store + per-namespace secrets) |
 
 All applications use **auto-sync**, **selfHeal**, **prune**, and **ServerSideApply**.
 
@@ -226,10 +284,12 @@ terraform init && terraform apply
 - **kagent uses RemoteMCPServer** to consume AgentGateway-fronted MCP tools — gets tracing and policy enforcement for free
 - **ArgoCD with ServerSideApply** — required for CRDs that preserve unknown fields
 - **Separated concerns** — Agent CRs in `agents/`, tool server CRs in `tool-servers/`, slack bot in `slack-bot/`
+- **Vault-backed secrets** — External Secrets Operator pulls secrets from Vault into Kubernetes, replacing manual Secret management
+- **Moat sandbox coder** — Isolated Linux sandbox agent for code execution via Moat MCP server
 
 ---
 
-**Last Updated**: February 20, 2026
+**Last Updated**: March 27, 2026
 **Cluster**: maniak-rooster (Talos)
 **Cluster Name (mgmt)**: rooster.maniak.io
 **Maintainer**: Seb (@ProfessorSeb)
