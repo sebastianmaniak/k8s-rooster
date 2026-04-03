@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: moat-fleet
+  namespace: argocd
+spec:
+  destination:
+    namespace: kagent
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    chart: moat-fleet
+    repoURL: ghcr.io/solo-io/moat-fleet/charts
+    targetRevision: 0.1.0
+    helm:
+      valuesObject:
+        fleetController:
+          replicaCount: 1
+          databaseUrl: postgresql://moat:moat@postgres.kagent.svc.cluster.local:5432/moat_fleet?sslmode=disable
+          auth:
+            provider: kubernetes
+            kubernetes: {}
+          leaseDurationSecs: 15
+          suspectGracePeriodSecs: 15
+          healthCheckIntervalSecs: 10
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+        agw:
+          enabled: true
+          replicaCount: 1
+          service:
+            type: ClusterIP
+            port: 3000
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

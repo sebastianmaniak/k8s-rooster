@@ -7,8 +7,11 @@ metadata:
     app.kubernetes.io/component: remote-mcp
     app.kubernetes.io/name: kagent-tool-servers
 spec:
-  description: Moat sandbox pool manager — create isolated Linux sandboxes, execute code, manage files, and snapshots
+  description: >-
+    Moat sandbox pool manager — create isolated Linux sandboxes with fleet-wide
+    orchestration, execute code, manage files, port forwarding, snapshots, and
+    container image support across a distributed pool of hosts
   protocol: STREAMABLE_HTTP
   terminateOnClose: true
-  timeout: 60s
+  timeout: 120s
   url: http://172.16.10.173:8000/mcp
