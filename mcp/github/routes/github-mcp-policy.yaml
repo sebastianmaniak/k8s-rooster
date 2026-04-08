@@ -12,3 +12,6 @@ spec:
     mcp:
       authorization:
         action: Allow
+        policy:
+          matchExpressions:
+            - "true"
