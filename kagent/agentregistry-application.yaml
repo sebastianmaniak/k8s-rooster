@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: agentregistry
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: agentregistry
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: us-docker.pkg.dev/agentregistry/enterprise/helm
+    chart: agentregistry-enterprise
+    targetRevision: 0.0.12
+    helm:
+      valuesObject:
+        image:
+          registry: us-docker.pkg.dev
+          repository: agentregistry/enterprise
+          name: server
+          tag: "0.0.12"
+        config:
+          enableAnonymousAuth: "true"
+        aws:
+          enabled: false
+        service:
+          type: ClusterIP
+        clickhouse:
+          enabled: true
+        telemetry:
+          enabled: true
+        database:
+          postgres:
+            bundled:
+              enabled: true
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
