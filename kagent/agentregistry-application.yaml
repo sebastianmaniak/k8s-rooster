@@ -15,9 +15,6 @@ spec:
     helm:
       valuesObject:
         image:
-          registry: us-docker.pkg.dev
-          repository: agentregistry/enterprise
-          name: server
           tag: "0.0.12"
         config:
           enableAnonymousAuth: "true"
@@ -25,14 +22,6 @@ spec:
           enabled: false
         service:
           type: ClusterIP
-        clickhouse:
-          enabled: true
-        telemetry:
-          enabled: true
-        database:
-          postgres:
-            bundled:
-              enabled: true
   syncPolicy:
     automated:
       prune: true
