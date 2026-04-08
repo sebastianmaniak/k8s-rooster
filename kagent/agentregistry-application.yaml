@@ -22,11 +22,6 @@ spec:
           enabled: false
         service:
           type: ClusterIP
-        probes:
-          liveness:
-            path: /docs
-          readiness:
-            path: /docs
   ignoreDifferences:
     - group: apps
       kind: Deployment
