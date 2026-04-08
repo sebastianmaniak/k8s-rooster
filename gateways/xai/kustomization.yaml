@@ -6,7 +6,6 @@ resources:
   - route.yaml
   - xaigateway.yaml
   - rate-limit-config.yaml
-  - rate-limit-policy.yaml
 
 commonLabels:
   app.kubernetes.io/name: xai-gateway
