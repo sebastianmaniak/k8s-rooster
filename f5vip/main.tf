@@ -1,33 +1,19 @@
-###############################################################################
-# Local mappings
-###############################################################################
-
 locals {
-  # VIP assignments from 172.16.20.120-130 range
+  # VIP assignments from 172.16.20.120-130 range (trimmed after agentgateway/kagent removal)
   vips = {
-    solo_rooster = "172.16.20.120" # solo.rooster.maniak.com (main agentgateway)
     argo_rooster = "172.16.20.121" # argo.rooster.maniak.io (ArgoCD)
     ui_rooster   = "172.16.20.130" # ui.rooster.maniak.com (Solo Enterprise UI)
-    xai_gateway  = "172.16.20.122" # xai-gateway-proxy
-    mcp_gateway  = "172.16.20.123" # mcp-gateway-proxy
-    model_gw     = "172.16.20.124" # model-priority-gateway-proxy
-    github_gw    = "172.16.20.125" # github-gateway-proxy
     vault_ui     = "172.16.20.126" # vault.rooster.maniak.com (Vault UI)
     kiali        = "172.16.20.127" # kiali.rooster.maniak.com (Kiali mesh UI)
   }
 
   # NodePort mappings from live cluster
   nodeports = {
-    solo_rooster = 31572 # agentgateway-proxy 8080:31572
-    argo_https   = 31988 # argocd-server 443:31988
-    argo_http    = 32178 # argocd-server 80:32178
-    ui_rooster   = 31211 # solo-enterprise-ui 80:31211
-    xai_gateway  = 31990 # xai-gateway-proxy 8081:31990
-    mcp_gateway  = 30168 # mcp-gateway-proxy 8090:30168
-    model_gw     = 30689 # model-priority-gateway-proxy 8085:30689
-    github_gw    = 31313 # github-gateway-proxy 8092:31313
-    vault_ui     = 30820 # vault 8200:30820
-    kiali        = 31094 # kiali 20001:31094
+    argo_https = 31988 # argocd-server 443:31988
+    argo_http  = 32178 # argocd-server 80:32178
+    ui_rooster = 31211 # solo-enterprise-ui 80:31211
+    vault_ui   = 30820 # vault 8200:30820
+    kiali      = 31094 # kiali 20001:31094
   }
 
   # Build pool member lists: each node on the relevant NodePort
@@ -36,31 +22,11 @@ locals {
   }
 }
 
-###############################################################################
-# Monitors
-###############################################################################
-
 resource "bigip_ltm_monitor" "tcp" {
   name     = "/${var.partition}/rooster_tcp_monitor"
   parent   = "/Common/tcp"
   interval = 10
   timeout  = 31
-}
-
-###############################################################################
-# Pools
-###############################################################################
-
-resource "bigip_ltm_pool" "solo_rooster" {
-  name                = "/${var.partition}/pool_solo_rooster"
-  load_balancing_mode = "round-robin"
-  monitors            = [bigip_ltm_monitor.tcp.name]
-}
-
-resource "bigip_ltm_pool_attachment" "solo_rooster" {
-  for_each = toset(local.pool_members["solo_rooster"])
-  pool     = bigip_ltm_pool.solo_rooster.name
-  node     = "/${var.partition}/${each.value}"
 }
 
 resource "bigip_ltm_pool" "argo_https" {
@@ -99,54 +65,6 @@ resource "bigip_ltm_pool_attachment" "ui_rooster" {
   node     = "/${var.partition}/${each.value}"
 }
 
-resource "bigip_ltm_pool" "xai_gateway" {
-  name                = "/${var.partition}/pool_xai_gateway"
-  load_balancing_mode = "round-robin"
-  monitors            = [bigip_ltm_monitor.tcp.name]
-}
-
-resource "bigip_ltm_pool_attachment" "xai_gateway" {
-  for_each = toset(local.pool_members["xai_gateway"])
-  pool     = bigip_ltm_pool.xai_gateway.name
-  node     = "/${var.partition}/${each.value}"
-}
-
-resource "bigip_ltm_pool" "mcp_gateway" {
-  name                = "/${var.partition}/pool_mcp_gateway"
-  load_balancing_mode = "round-robin"
-  monitors            = [bigip_ltm_monitor.tcp.name]
-}
-
-resource "bigip_ltm_pool_attachment" "mcp_gateway" {
-  for_each = toset(local.pool_members["mcp_gateway"])
-  pool     = bigip_ltm_pool.mcp_gateway.name
-  node     = "/${var.partition}/${each.value}"
-}
-
-resource "bigip_ltm_pool" "model_gw" {
-  name                = "/${var.partition}/pool_model_priority_gateway"
-  load_balancing_mode = "round-robin"
-  monitors            = [bigip_ltm_monitor.tcp.name]
-}
-
-resource "bigip_ltm_pool_attachment" "model_gw" {
-  for_each = toset(local.pool_members["model_gw"])
-  pool     = bigip_ltm_pool.model_gw.name
-  node     = "/${var.partition}/${each.value}"
-}
-
-resource "bigip_ltm_pool" "github_gw" {
-  name                = "/${var.partition}/pool_github_gateway"
-  load_balancing_mode = "round-robin"
-  monitors            = [bigip_ltm_monitor.tcp.name]
-}
-
-resource "bigip_ltm_pool_attachment" "github_gw" {
-  for_each = toset(local.pool_members["github_gw"])
-  pool     = bigip_ltm_pool.github_gw.name
-  node     = "/${var.partition}/${each.value}"
-}
-
 resource "bigip_ltm_pool" "vault_ui" {
   name                = "/${var.partition}/pool_vault_ui"
   load_balancing_mode = "round-robin"
@@ -169,21 +87,6 @@ resource "bigip_ltm_pool_attachment" "kiali" {
   for_each = toset(local.pool_members["kiali"])
   pool     = bigip_ltm_pool.kiali.name
   node     = "/${var.partition}/${each.value}"
-}
-
-###############################################################################
-# Virtual Servers
-###############################################################################
-
-# --- solo.rooster.maniak.com (L4 TCP) ---
-resource "bigip_ltm_virtual_server" "solo_rooster" {
-  name                       = "/${var.partition}/vs_solo_rooster"
-  destination                = local.vips["solo_rooster"]
-  port                       = 8080
-  pool                       = bigip_ltm_pool.solo_rooster.name
-  ip_protocol                = "tcp"
-  source_address_translation = "automap"
-  profiles                   = ["/Common/fastL4"]
 }
 
 # --- argo.rooster.maniak.io (HTTPS - L4 passthrough) ---
@@ -219,45 +122,12 @@ resource "bigip_ltm_virtual_server" "ui_rooster" {
   profiles                   = ["/Common/fastL4"]
 }
 
-# --- xai-gateway-proxy (L4 TCP) ---
-resource "bigip_ltm_virtual_server" "xai_gateway" {
-  name                       = "/${var.partition}/vs_xai_gateway"
-  destination                = local.vips["xai_gateway"]
-  port                       = 8081
-  pool                       = bigip_ltm_pool.xai_gateway.name
-  ip_protocol                = "tcp"
-  source_address_translation = "automap"
-  profiles                   = ["/Common/fastL4"]
-}
-
-# --- mcp-gateway-proxy (L4 TCP) ---
-resource "bigip_ltm_virtual_server" "mcp_gateway" {
-  name                       = "/${var.partition}/vs_mcp_gateway"
-  destination                = local.vips["mcp_gateway"]
-  port                       = 8090
-  pool                       = bigip_ltm_pool.mcp_gateway.name
-  ip_protocol                = "tcp"
-  source_address_translation = "automap"
-  profiles                   = ["/Common/fastL4"]
-}
-
-# --- model-priority-gateway-proxy (L4 TCP) ---
-resource "bigip_ltm_virtual_server" "model_gw" {
-  name                       = "/${var.partition}/vs_model_priority_gateway"
-  destination                = local.vips["model_gw"]
-  port                       = 8085
-  pool                       = bigip_ltm_pool.model_gw.name
-  ip_protocol                = "tcp"
-  source_address_translation = "automap"
-  profiles                   = ["/Common/fastL4"]
-}
-
-# --- github-gateway-proxy (L4 TCP) ---
-resource "bigip_ltm_virtual_server" "github_gw" {
-  name                       = "/${var.partition}/vs_github_gateway"
-  destination                = local.vips["github_gw"]
-  port                       = 8092
-  pool                       = bigip_ltm_pool.github_gw.name
+# --- vault.rooster.maniak.com (Vault UI - L4 TCP) ---
+resource "bigip_ltm_virtual_server" "vault_ui" {
+  name                       = "/${var.partition}/vs_vault_ui"
+  destination                = local.vips["vault_ui"]
+  port                       = 8200
+  pool                       = bigip_ltm_pool.vault_ui.name
   ip_protocol                = "tcp"
   source_address_translation = "automap"
   profiles                   = ["/Common/fastL4"]
@@ -269,17 +139,6 @@ resource "bigip_ltm_virtual_server" "kiali" {
   destination                = local.vips["kiali"]
   port                       = 20001
   pool                       = bigip_ltm_pool.kiali.name
-  ip_protocol                = "tcp"
-  source_address_translation = "automap"
-  profiles                   = ["/Common/fastL4"]
-}
-
-# --- vault.rooster.maniak.com (Vault UI - L4 TCP) ---
-resource "bigip_ltm_virtual_server" "vault_ui" {
-  name                       = "/${var.partition}/vs_vault_ui"
-  destination                = local.vips["vault_ui"]
-  port                       = 8200
-  pool                       = bigip_ltm_pool.vault_ui.name
   ip_protocol                = "tcp"
   source_address_translation = "automap"
   profiles                   = ["/Common/fastL4"]
